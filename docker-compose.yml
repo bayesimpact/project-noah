@@ -20,3 +20,16 @@ services:
       - "3005:80"
     environment:
       - FIREBASE_TOKEN
+
+  backend:
+      image: backend
+      build:
+        context: .
+        dockerfile: Dockerfile.backend
+      command: start-notebook.sh --NotebookApp.token=''
+      ports:
+        - 8888:8888
+      volumes: 
+        - ./:/home/jovyan/work:rw
+      environment:
+        - PYTHONPATH=/home/jovyan/work
