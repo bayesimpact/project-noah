@@ -64,7 +64,7 @@ class PublicView extends React.Component {
     }
     return (
       <div>
-        {user ? <div>Hola {user.displayName}</div> : <Link to="/login">login or signup</Link>}
+        {user ? <UserComponent user={user} /> : <Link to="/login">login or signup</Link>}
         <ReactMapboxGl
             style="mapbox://styles/mapbox/streets-v8"
             accessToken={config.mapboxAccessToken}
@@ -77,6 +77,23 @@ class PublicView extends React.Component {
             <Marker coordinates={location} />
           </Layer>
         </ReactMapboxGl>
+      </div>
+    )
+  }
+}
+
+
+class UserComponent extends React.Component {
+  static propTypes = {
+    user: React.PropTypes.object,
+  };
+
+  render() {
+    const {user} = this.props
+    return (
+      <div>
+        <div>Hola {user.displayName}</div>
+        <button onClick={() => configuredFirebase.auth().signOut()}>sign out</button>
       </div>
     )
   }
