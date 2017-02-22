@@ -33,6 +33,7 @@
     "eqeqeq": "error",
     "global-strict": 0,
     "import/unambiguous": 0,
+    "import/no-unresolved": 0,
     "indent": ["error", 2, {"SwitchCase": 1}],
     "jsx-quotes": ["error", "prefer-double"],
     "key-spacing": "error",
