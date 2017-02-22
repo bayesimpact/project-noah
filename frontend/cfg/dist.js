@@ -26,8 +26,6 @@ Array.prototype.push.apply(config.plugins, [
   }),
   // Minimize all JavaScript files to reduce their size (renames variable names, etc).
   new webpack.optimize.UglifyJsPlugin(),
-  // Only keep the fr locale from the moment library.
-  new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /fr/),
   // Embed the JavaScript in the index.html page.
   new HtmlWebpackPlugin({
     filename: '../index.html',

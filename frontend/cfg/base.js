@@ -59,7 +59,6 @@ module.exports = {
   ],
   resolve: {
     alias: {
-      api: srcPath + '/../bob_emploi/frontend/api',
       components: srcPath + '/components/',
       config: srcPath + '/config/' + process.env.REACT_WEBPACK_ENV,
       images: srcPath + '/images/',
