@@ -24,6 +24,10 @@ class AppComponent extends React.Component {
     configuredFirebase.auth().onAuthStateChanged(user => {
       this.setState({user})
     })
+
+    configuredFirebase.database().ref('/data/hazards').on('value', snapshot => {
+      this.setState({hazards: snapshot.val()})
+    })
   }
 
   state = {
@@ -52,12 +56,13 @@ class AppComponent extends React.Component {
 class PublicView extends React.Component {
   // TODO: Get rid of the propTypes warning it currently throws, even when an array is given.
   static propTypes = {
+    hazards: React.PropTypes.array,
     location: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
     user: React.PropTypes.object,
   };
 
   render() {
-    const {location, user} = this.props
+    const {hazards, location, user} = this.props
     const mapboxContainerStyle = {
       height: '100vh',
       width: '100vw',
@@ -70,11 +75,11 @@ class PublicView extends React.Component {
             accessToken={config.mapboxAccessToken}
             center={location}
             containerStyle={mapboxContainerStyle}>
-          <Layer
-              type="symbol"
-              id="marker"
-              layout={{'icon-image': 'marker-15'}}>
+          <Layer type="symbol" id="marker" layout={{'icon-image': 'marker-15'}}>
             <Marker coordinates={location} />
+          </Layer>
+          <Layer type="symbol" id="hazards" layout={{'icon-image': 'fire-station-15'}}>
+            {(hazards || []).map((coordinates, i) => <Marker key={i} coordinates={coordinates} />)}
           </Layer>
         </ReactMapboxGl>
       </div>
