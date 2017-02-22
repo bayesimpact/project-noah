@@ -7,6 +7,7 @@
     "clean": "rimraf dist/*",
     "copy": "copyfiles -f ./src/index.html ./src/favicon.ico ./dist",
     "dist": "npm run copy && webpack --env=dist",
+    "deploy": "npm run dist && ./node_modules/firebase-tools/bin/firebase deploy --token \"$FIREBASE_TOKEN\"",
     "lint": "eslint .",
     "serve": "node server.js --env=dev",
     "serve:dist": "node server.js --env=dist",

@@ -10,6 +10,11 @@ dependencies:
 test:
   override:
     - docker-compose run frontend npm run lint
+deployment:
+  firebase:
+    branch: master
+    commands:
+      - docker-compose run frontend npm run deploy
 experimental:
   notify:
     branches:

@@ -12,6 +12,10 @@ services:
       # For linting.
       - ./.eslintrc.json:/usr/app/.eslintrc.json:ro
       - ./.eslintignore:/usr/app/.eslintignore:ro
+      # Firebase
+      - ./frontend/.firebaserc:/usr/app/.firebaserc:ro
+      - ./frontend/firebase.json:/usr/app/firebase.json:ro
+      - ./frontend/database.rules.json:/usr/app/database.rules.json:ro
     ports:
       - "3005:80"
     environment:
