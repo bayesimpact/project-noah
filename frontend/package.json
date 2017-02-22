@@ -1,7 +1,7 @@
 {
   "private": true,
   "version": "0.0.1",
-  "description": "CA Agile Project",
+  "description": "Project Noah",
   "main": "",
   "scripts": {
     "clean": "rimraf dist/*",

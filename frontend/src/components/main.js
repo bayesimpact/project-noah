@@ -1,5 +1,4 @@
 require('normalize.css/normalize.css')
-require('styles/App.css')
 
 import React from 'react'
 import ReactMapboxGl, {Layer, Marker} from 'react-mapbox-gl'
@@ -33,7 +32,7 @@ class AppComponent extends React.Component {
     }
     return (
       <div style={appStyle}>
-        <h1>Agile Prototype!</h1>
+        <h1>Project Noah ⛵</h1>
         <h2>This is going to be amazing!</h2>
         <ReactMapboxGl
           style="mapbox://styles/mapbox/streets-v8"
