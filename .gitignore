@@ -1,0 +1,12 @@
+# OS artifacts
+.DS_Store
+
+# Installed dependencies
+node_modules
+
+# Editor files
+*.sublime-project
+*.sublime-workspace
+
+# Compiled files
+dist
