@@ -1,5 +1,13 @@
 version: "2"
 services:
+  backend:
+    build: backend
+    volumes:
+      - ./backend/package.json:/usr/app/package.json:ro
+      - ./backend/index.js:/usr/app/index.js:ro
+      - ./.eslintrc.json:/usr/app/.eslintrc.json:ro
+    environment:
+      - FIREBASE_ADMIN_PRIVATE_KEY
   frontend:
     build: frontend
     volumes:

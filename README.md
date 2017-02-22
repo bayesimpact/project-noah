@@ -4,10 +4,23 @@ Warn people when the flood is about to come.
 
 ## Development
 
+### Frontend
+
 To run the frontend in development mode on `localhost:3005`:
 
 ```sh
   docker-compose up -d frontend
+```
+
+
+### Backend
+
+To run the backend
+
+You first have to set the `FIREBASE_ADMIN_PRIVATE_KEY` environment variable. Ask Stephan to get the right value for it. Then simply run:
+
+```sh
+  docker-compose run --rm backend
 ```
 
 ## Frontend Deployment

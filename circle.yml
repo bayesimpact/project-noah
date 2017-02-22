@@ -6,10 +6,11 @@ machine:
     - docker
 dependencies:
   override:
-    - docker-compose build frontend
+    - docker-compose build frontend backend
 test:
   override:
     - docker-compose run frontend npm run lint
+    - docker-compose run backend npm run lint
 deployment:
   firebase:
     branch: master
