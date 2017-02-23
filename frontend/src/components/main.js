@@ -8,6 +8,8 @@ import {Link} from 'react-router'
 import config from 'config'
 import {store} from 'store/firebase'
 
+// Center of the US.
+const START_LOCATION = [-96.328530, 38.321018]
 
 class AppComponent extends React.Component {
   static propTypes = {
@@ -15,17 +17,11 @@ class AppComponent extends React.Component {
   }
 
   componentWillMount() {
-    navigator.geolocation.getCurrentPosition(location => {
-      this.setState({location: [location.coords.longitude, location.coords.latitude]})
-    })
-
     store.loginChanged(user => this.setState({user}))
     store.getHazards(hazards => this.setState({hazards}))
   }
 
-  state = {
-    location: [-0.481747846041145, 51.3233379650232],
-  }
+  state = {}
 
   render() {
     const {children} = this.props
@@ -47,15 +43,13 @@ class AppComponent extends React.Component {
 
 
 class PublicView extends React.Component {
-  // TODO: Get rid of the propTypes warning it currently throws, even when an array is given.
   static propTypes = {
     hazards: React.PropTypes.array,
-    location: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
     user: React.PropTypes.object,
   };
 
   render() {
-    const {hazards, location, user} = this.props
+    const {hazards, user} = this.props
     const mapboxContainerStyle = {
       height: '100vh',
       width: '100vw',
@@ -66,10 +60,11 @@ class PublicView extends React.Component {
         <ReactMapboxGl
             style="mapbox://styles/mapbox/streets-v8"
             accessToken={config.mapboxAccessToken}
-            center={location}
-            containerStyle={mapboxContainerStyle}>
+            center={user && user.location || START_LOCATION}
+            containerStyle={mapboxContainerStyle}
+            zoom={user && user.location ? [7] : [4]}>
           <Layer type="symbol" id="marker" layout={{'icon-image': 'marker-15'}}>
-            <Marker coordinates={location} />
+            {user && user.location ? <Marker coordinates={user.location} /> : null}
           </Layer>
           <Layer type="symbol" id="hazards" layout={{'icon-image': 'fire-station-15'}}>
             {(hazards || []).map((coordinates, i) => <Marker key={i} coordinates={coordinates} />)}
@@ -86,12 +81,28 @@ class UserComponent extends React.Component {
     user: React.PropTypes.object,
   };
 
+  handleUpdateLocation = () => {
+    this.setState({isRequestingLocation: true})
+    navigator.geolocation.getCurrentPosition(location => {
+      this.setState({isRequestingLocation: false})
+      store.updateUserLocation([location.coords.longitude, location.coords.latitude])
+    })
+  }
+
+  state = {
+    isRequestingLocation: false,
+  }
+
   render() {
     const {user} = this.props
+    const {isRequestingLocation} = this.state
     return (
       <div>
         <div>Hola {user.displayName}</div>
         <button onClick={store.logout}>sign out</button>
+        <button onClick={this.handleUpdateLocation}>
+          {isRequestingLocation ? 'getting location' : 'update my location'}
+        </button>
       </div>
     )
   }
