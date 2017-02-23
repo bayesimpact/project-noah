@@ -1,7 +1,10 @@
 import 'core-js/fn/object/assign'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {AppComponent, PublicView, LoginPage} from './components/main'
+import {AppComponent} from './components/main'
+import {PublicView} from './components/public_view'
+import {LoginPage} from './components/login_page'
+
 
 import {Router, browserHistory} from 'react-router'
 
