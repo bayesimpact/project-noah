@@ -24,10 +24,11 @@ for (let i = 0; i < 20; i++) {
 db.ref('data/hazards').set(hazards)
 
 // Add a few test user locations hanging out in SF and Paris for testing.
-const userLocations = {}
+const userProfiles = {}
 for (let i = 0; i < 20; i++) {
   const city = i < 10 ? SAN_FRANSISCO : PARIS
-  userLocations[i] = [city[0] + Math.random() * 3 - 1.5, city[1] + Math.random() * 3 - 1.5]
+  const randomCityLocation = [city[0] + Math.random() * 3 - 1.5, city[1] + Math.random() * 3 - 1.5]
+  userProfiles[`dummy-user-${i}`] = {location: randomCityLocation}
 }
 
-db.ref('/userLocations').update(userLocations)
+db.ref('/userProfiles').update(userProfiles)
