@@ -3,12 +3,10 @@ require('firebaseui/dist/firebaseui.css')
 
 import React from 'react'
 import ReactMapboxGl, {Layer, Marker} from 'react-mapbox-gl'
-import {Link, browserHistory} from 'react-router'
-import firebase from 'firebase'
-import firebaseui from 'firebaseui'
+import {Link} from 'react-router'
 
 import config from 'config'
-import configuredFirebase from 'store/firebase'
+import {store} from 'store/firebase'
 
 
 class AppComponent extends React.Component {
@@ -21,13 +19,8 @@ class AppComponent extends React.Component {
       this.setState({location: [location.coords.longitude, location.coords.latitude]})
     })
 
-    configuredFirebase.auth().onAuthStateChanged(user => {
-      this.setState({user})
-    })
-
-    configuredFirebase.database().ref('/data/hazards').on('value', snapshot => {
-      this.setState({hazards: snapshot.val()})
-    })
+    store.loginChanged(user => this.setState({user}))
+    store.getHazards(hazards => this.setState({hazards}))
   }
 
   state = {
@@ -98,7 +91,7 @@ class UserComponent extends React.Component {
     return (
       <div>
         <div>Hola {user.displayName}</div>
-        <button onClick={() => configuredFirebase.auth().signOut()}>sign out</button>
+        <button onClick={store.logout}>sign out</button>
       </div>
     )
   }
@@ -108,20 +101,7 @@ class UserComponent extends React.Component {
 class LoginPage extends React.Component {
 
   componentDidMount() {
-    var uiConfig = {
-      callbacks: {
-        signInSuccess: () => {
-          browserHistory.push('/')
-          return false
-        },
-      },
-      'signInOptions': [
-        firebase.auth.EmailAuthProvider.PROVIDER_ID,
-      ],
-      credentialHelper: firebaseui.auth.CredentialHelper.NONE,
-    }
-    var ui = new firebaseui.auth.AuthUI(configuredFirebase.auth())
-    ui.start('#firebaseui-auth-container', uiConfig)
+    store.startFirebaseUi('#firebaseui-auth-container', {redirectUrl: '/'})
   }
 
   render() {
