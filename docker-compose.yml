@@ -4,10 +4,15 @@ services:
     build: backend
     volumes:
       - ./backend/package.json:/usr/app/package.json:ro
-      - ./backend/index.js:/usr/app/index.js:ro
+      - ./backend/dummy_data_importer.js:/usr/app/dummy_data_importer.js:ro
+      - ./backend/notification_handler.js:/usr/app/notification_handler.js:ro
+      - ./backend/config.js:/usr/app/config.js:ro
       - ./.eslintrc.json:/usr/app/.eslintrc.json:ro
     environment:
       - FIREBASE_ADMIN_PRIVATE_KEY
+      - TWILIO_NUMBER
+      - TWILIO_ACCOUNT_SID
+      - TWILIO_AUTH_TOKEN
   frontend:
     build: frontend
     volumes:
@@ -37,7 +42,7 @@ services:
       command: start-notebook.sh --NotebookApp.token=''
       ports:
         - 8888:8889
-      volumes: 
+      volumes:
         - ./:/home/jovyan/work:rw
       environment:
         - PYTHONPATH=/home/jovyan/work
