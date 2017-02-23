@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactMapboxGl, {Layer, Marker} from 'react-mapbox-gl'
 import haversine from 'haversine'
+import Dialog from 'material-ui/Dialog'
 
 import config from 'config'
 import {store} from 'store/firebase'
@@ -54,7 +55,7 @@ class AdminView extends React.Component {
   }
 
   render() {
-    const {hazards, hoveredHazard, userProfiles, zoomLevel} = this.state
+    const {hazards, hoveredHazard, openedHazard, userProfiles, zoomLevel} = this.state
     const mapboxContainerStyle = {
       height: '100vh',
       width: '100vw',
@@ -72,6 +73,10 @@ class AdminView extends React.Component {
         <h2>
           Hover over the hazards to highlight people in its proximity ({PROXIMITY_THRESHOLD} Km)
         </h2>
+        <Dialog title="Hazard information" modal={true} open={!!openedHazard}>
+          <div>{(this.hazardProximity[openedHazard] || []).length} people in proximity</div>
+          <button onClick={() => this.setState({openedHazard: null})}>close</button>
+        </Dialog>
         <ReactMapboxGl
             style="mapbox://styles/mapbox/streets-v8"
             accessToken={config.mapboxAccessToken}
@@ -91,7 +96,8 @@ class AdminView extends React.Component {
               return <Marker
                   key={i} coordinates={coordinates}
                   onHover={() => this.setState({hoveredHazard: i})}
-                  onEndHover={() => this.setState({hoveredHazard: null})} />
+                  onEndHover={() => this.setState({hoveredHazard: null})}
+                  onClick={() => this.setState({openedHazard: i})} />
             })}
           </Layer>
         </ReactMapboxGl>
