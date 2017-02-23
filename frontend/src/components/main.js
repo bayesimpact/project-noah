@@ -12,7 +12,6 @@ class AppComponent extends React.Component {
 
   componentWillMount() {
     store.loginChanged(user => this.setState({user}))
-    store.getHazards(hazards => this.setState({hazards}))
   }
 
   state = {}

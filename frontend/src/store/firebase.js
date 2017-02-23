@@ -20,6 +20,11 @@ const store = {
       callback(snapshot.val())
     })
   },
+  getUserProfiles: function(callback) {
+    db.ref('/userProfiles').on('value', snapshot => {
+      callback(Object.values(snapshot.val()))
+    })
+  },
   loginChanged: function(callback) {
     configuredFirebase.auth().onAuthStateChanged(user => {
       this.user = user

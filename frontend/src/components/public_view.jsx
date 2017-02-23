@@ -12,18 +12,23 @@ const START_LOCATION = [-96.328530, 38.321018]
 
 class PublicView extends React.Component {
   static propTypes = {
-    hazards: React.PropTypes.array,
     user: React.PropTypes.object,
   };
 
+  componentWillMount() {
+    store.getHazards(hazards => this.setState({hazards}))
+  }
+
   render() {
-    const {hazards, user} = this.props
+    const {user} = this.props
+    const {hazards} = this.state
     const mapboxContainerStyle = {
       height: '100vh',
       width: '100vw',
     }
     return (
       <div>
+        {user && user.isAdmin ? <Link to="admin">Admin View</Link> : null}
         {user ? <UserComponent user={user} /> : <Link to="/login">login or signup</Link>}
         <ReactMapboxGl
             style="mapbox://styles/mapbox/streets-v8"

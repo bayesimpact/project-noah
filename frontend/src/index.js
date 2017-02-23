@@ -3,6 +3,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import {AppComponent} from './components/main'
 import {PublicView} from './components/public_view'
+import {AdminView} from './components/admin_view'
 import {LoginPage} from './components/login_page'
 
 
@@ -19,6 +20,10 @@ const routes = {
     {
       path: 'login',
       component: LoginPage,
+    },
+    {
+      path: 'admin',
+      component: AdminView,
     },
   ],
 }
