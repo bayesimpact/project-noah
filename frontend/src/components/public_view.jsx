@@ -53,7 +53,7 @@ class UserComponent extends React.Component {
     this.setState({isRequestingLocation: true})
     navigator.geolocation.getCurrentPosition(location => {
       this.setState({isRequestingLocation: false})
-      store.updateUserLocation([location.coords.longitude, location.coords.latitude])
+      store.updateUserProfile({location: [location.coords.longitude, location.coords.latitude]})
     })
   }
 
@@ -68,9 +68,49 @@ class UserComponent extends React.Component {
       <div>
         <div>Hola {user.displayName}</div>
         <button onClick={store.logout}>sign out</button>
-        <button onClick={this.handleUpdateLocation}>
+        <UserPhoneNumber user={user} />
+        {user.phoneNumber ? <button onClick={this.handleUpdateLocation}>
           {isRequestingLocation ? 'getting location' : 'update my location'}
-        </button>
+        </button> : null}
+      </div>
+    )
+  }
+}
+
+
+class UserPhoneNumber extends React.Component {
+  static propTypes = {
+    user: React.PropTypes.object,
+  };
+
+  handlePhoneUpdate = () => {
+    // TODO: Add validation of the phone number.
+    const {phoneNumber} = this.state
+    store.updateUserProfile({phoneNumber})
+    this.setState({isEditing: false})
+  }
+
+  state = {
+    isEditing: false,
+    phoneNumber: '',
+  }
+
+  render() {
+    const {user} = this.props
+    const {isEditing, phoneNumber} = this.state
+    const isEditViewShown = isEditing || !user.phoneNumber
+    return (
+      <div>
+        {isEditViewShown ? <div>
+          <div>{user.phoneNumber ? 'Edit ' : 'Add '}phone number</div>
+          <input
+              type="text" value={phoneNumber || user.phoneNumber}
+              onChange={event => this.setState({phoneNumber: event.target.value})} />
+          <button onClick={this.handlePhoneUpdate}>submit</button>
+        </div> : <div>
+          <span>{user.phoneNumber}</span>
+          <button onClick={() => this.setState({isEditing: true})}>edit</button>
+        </div>}
       </div>
     )
   }

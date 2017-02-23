@@ -24,8 +24,9 @@ const store = {
     configuredFirebase.auth().onAuthStateChanged(user => {
       this.user = user
       if (user) {
-        db.ref(`/userLocations/${user.uid}`).on('value', snapshot => {
-          callback({...user, location: snapshot.val()})
+        db.ref(`/userProfiles/${user.uid}`).on('value', snapshot => {
+          this.user = {...this.user, ...snapshot.val()}
+          callback(this.user)
         })
       }
       callback(user)
@@ -49,11 +50,11 @@ const store = {
     }
     configuredFirebaseUi.start('#firebaseui-auth-container', uiConfig)
   },
-  updateUserLocation: function(location) {
+  updateUserProfile: function(profile) {
     if (!this.user) {
       throw 'No user logged in!'
     }
-    db.ref(`/userLocations/${this.user.uid}`).set(location)
+    db.ref(`/userProfiles/${this.user.uid}`).update(profile)
   },
 }
 
