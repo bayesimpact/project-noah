@@ -19,6 +19,8 @@ class PublicView extends React.Component {
     store.getHazards(hazards => this.setState({hazards}))
   }
 
+  state = {}
+
   render() {
     const {user} = this.props
     const {hazards} = this.state
@@ -108,6 +110,7 @@ class UserPhoneNumber extends React.Component {
       <div>
         {isEditViewShown ? <div>
           <div>{user.phoneNumber ? 'Edit ' : 'Add '}phone number</div>
+          <div>full phone number with country code, e.g: +33768517681</div>
           <input
               type="text" value={phoneNumber || user.phoneNumber}
               onChange={event => this.setState({phoneNumber: event.target.value})} />
