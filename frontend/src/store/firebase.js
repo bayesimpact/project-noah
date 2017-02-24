@@ -22,7 +22,7 @@ const store = {
   },
   getUserProfiles: function(callback) {
     db.ref('/userProfiles').on('value', snapshot => {
-      callback(Object.values(snapshot.val()))
+      callback(snapshot.val())
     })
   },
   loginChanged: function(callback) {

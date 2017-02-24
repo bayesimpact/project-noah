@@ -33,6 +33,7 @@ class AdminView extends React.Component {
       {unit: 'meter'}) / 1000
   }
 
+  // TODO: Move this computation to database using geofire-js.
   computeProximity() {
     const {hazards, userProfiles} = this.state
     const hazardProximity = {}
@@ -40,10 +41,10 @@ class AdminView extends React.Component {
       return
     }
     for (var i = 0; i < (hazards || []).length; i++) {
-      for (var j = 0; j < userProfiles.length; j++) {
-        const distKm = this.distanceBetweenCoordinatesKm(hazards[i], userProfiles[j].location)
+      for (var userId in userProfiles) {
+        const distKm = this.distanceBetweenCoordinatesKm(hazards[i], userProfiles[userId].location)
         if (distKm < PROXIMITY_THRESHOLD) {
-          hazardProximity[i] = (hazardProximity[i] || []).concat([j])
+          hazardProximity[i] = (hazardProximity[i] || []).concat([userId])
         }
       }
     }
@@ -52,6 +53,7 @@ class AdminView extends React.Component {
 
   state = {
     zoomLevel: 4,
+    openedHazard: null,
   }
 
   render() {
@@ -87,11 +89,12 @@ class AdminView extends React.Component {
             containerStyle={mapboxContainerStyle}
             onZoom={map => this.setState({zoomLevel: map.getZoom()})}
             zoom={[zoomLevel]}>
-          {(userProfiles || []).map((userProfile, i) => {
+          {Object.keys(userProfiles || []).map(userId => {
             const isInProximity = this.hazardProximity &&
-              hoveredHazard && (this.hazardProximity[hoveredHazard] || []).includes(i)
+              hoveredHazard !== null &&
+              (this.hazardProximity[hoveredHazard] || []).includes(userId)
             return <Marker
-                key={i} coordinates={userProfile.location}
+                key={userId} coordinates={userProfiles[userId].location}
                 style={{...markerStyle, backgroundColor: isInProximity ? 'red' : '#E0E0E0'}} />
           })}
           <Layer type="symbol" id="hazards" layout={{'icon-image': 'fire-station-15'}}>
