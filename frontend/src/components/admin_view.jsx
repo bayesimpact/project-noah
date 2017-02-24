@@ -69,19 +69,22 @@ class AdminView extends React.Component {
       backgroundColor: '#E0E0E0',
       border: '2px solid #C9C9C9',
     }
+    let usersInProximityToOpenedHazard = []
+    if (openedHazard !== null && this.hazardProximity) {
+      usersInProximityToOpenedHazard = (this.hazardProximity[openedHazard] || []).map(userId => {
+        return userProfiles[userId]
+      })
+    }
     return (
       <div>
         <h1>Welcome Admin</h1>
         <h2>
           Hover over the hazards to highlight people in its proximity ({PROXIMITY_THRESHOLD} Km)
         </h2>
-        <Dialog title="Hazard information" modal={true} open={!!openedHazard}>
-          <div>
-            {this.hazardProximity && (this.hazardProximity[openedHazard] || []).length}
-            people in proximity
-          </div>
-          <button onClick={() => this.setState({openedHazard: null})}>close</button>
-        </Dialog>
+        <UserAlertDialog
+            onClose={() => this.setState({openedHazard: null})}
+            open={openedHazard !== null}
+            usersInProximity={usersInProximityToOpenedHazard} />
         <ReactMapboxGl
             style="mapbox://styles/mapbox/streets-v8"
             accessToken={config.mapboxAccessToken}
@@ -111,5 +114,39 @@ class AdminView extends React.Component {
     )
   }
 }
+
+
+class UserAlertDialog extends React.Component {
+  static propTypes = {
+    onClose: React.PropTypes.func.isRequired,
+    open: React.PropTypes.bool,
+    usersInProximity: React.PropTypes.array,
+  }
+
+  handleSendWarning(usersInProximity) {
+    store.sendWarning(usersInProximity)
+  }
+
+  render() {
+    const {onClose, open, usersInProximity} = this.props
+    return (
+      <Dialog title="Hazard information" modal={true} open={open}>
+        <div>
+          {(usersInProximity || []).length}
+          people in proximity
+        </div>
+        <div>
+          <h2>Warn them!</h2>
+          <button onClick={() => this.handleSendWarning(usersInProximity)}>
+            Send warning to all of them
+          </button>
+        </div>
+        <button onClick={onClose}>close</button>
+      </Dialog>
+    )
+  }
+}
+
+
 
 export {AdminView}
