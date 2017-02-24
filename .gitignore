@@ -13,3 +13,6 @@ dist
 
 # iPython notebook backups
 .ipynb_checkpoints
+
+# Logs
+*.log
