@@ -125,9 +125,16 @@ class UserAlertDialog extends React.Component {
 
   handleSendWarning(usersInProximity) {
     store.sendWarning(usersInProximity)
+    this.setState({isSending: true})
+    setTimeout(() => this.setState({isSending: false}), 3000)
+  }
+
+  state = {
+    isSending: false,
   }
 
   render() {
+    const {isSending} = this.state
     const {onClose, open, usersInProximity} = this.props
     return (
       <Dialog title="Hazard information" modal={true} open={open}>
@@ -137,9 +144,11 @@ class UserAlertDialog extends React.Component {
         </div>
         <div>
           <h2>Warn them!</h2>
-          <button onClick={() => this.handleSendWarning(usersInProximity)}>
-            Send warning to all of them
-          </button>
+          {isSending ?
+            <span>sending...</span> :
+            <button onClick={() => this.handleSendWarning(usersInProximity)}>
+              Send warning to all of them
+            </button>}
         </div>
         <button onClick={onClose}>close</button>
       </Dialog>
