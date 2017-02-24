@@ -28,7 +28,7 @@ class PublicView extends React.Component {
     }
     return (
       <div>
-        {user && user.isAdmin ? <Link to="admin">Admin View</Link> : null}
+        <Link to="admin">Admin View</Link>
         {user ? <UserComponent user={user} /> : <Link to="/login">login or signup</Link>}
         <ReactMapboxGl
             style="mapbox://styles/mapbox/streets-v8"
