@@ -74,7 +74,10 @@ class AdminView extends React.Component {
           Hover over the hazards to highlight people in its proximity ({PROXIMITY_THRESHOLD} Km)
         </h2>
         <Dialog title="Hazard information" modal={true} open={!!openedHazard}>
-          <div>{(this.hazardProximity[openedHazard] || []).length} people in proximity</div>
+          <div>
+            {this.hazardProximity && (this.hazardProximity[openedHazard] || []).length}
+            people in proximity
+          </div>
           <button onClick={() => this.setState({openedHazard: null})}>close</button>
         </Dialog>
         <ReactMapboxGl
