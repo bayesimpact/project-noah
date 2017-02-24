@@ -17,10 +17,12 @@ const db = admin.database()
 
 // Add a few hazards around SF and Paris for testing.
 const hazards = {}
-for (let i = 0; i < 20; i++) {
+for (var i = 0; i < 20; i++) {
   const city = i < 10 ? SAN_FRANSISCO : PARIS
   hazards[i] = [city[0] + Math.random() * 6 - 3, city[1] + Math.random() * 6 - 3]
 }
+hazards[i++] = SAN_FRANSISCO
+hazards[i++] = PARIS
 db.ref('data/hazards').set(hazards)
 
 // Add a few test user locations hanging out in SF and Paris for testing.
