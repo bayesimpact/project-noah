@@ -15,12 +15,12 @@ To run the frontend in development mode on `localhost:3005`:
 
 ### Backend
 
-To run the backend
+To run the dummy data importer
 
 You first have to set the `FIREBASE_ADMIN_PRIVATE_KEY` environment variable. Ask Stephan to get the right value for it. Then simply run:
 
 ```sh
-  docker-compose run --rm backend
+  docker-compose run --rm backend npm run dummy_data_importer
 ```
 
 To run the backend for data manipulation and preparation with Jupyter notebooks on `localhost:8888`:
