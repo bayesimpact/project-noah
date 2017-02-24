@@ -30,7 +30,11 @@ const userProfiles = {}
 for (let i = 0; i < 20; i++) {
   const city = i < 10 ? SAN_FRANSISCO : PARIS
   const randomCityLocation = [city[0] + Math.random() * 3 - 1.5, city[1] + Math.random() * 3 - 1.5]
-  userProfiles[`dummy-user-${i}`] = {location: randomCityLocation}
+  userProfiles[`dummy-user-${i}`] = {
+    location: randomCityLocation,
+    // All of them get Stephan's number for now, it is the only one that is registered with Twilio.
+    phoneNumber: '+33768517681',
+  }
 }
 
 db.ref('/userProfiles').update(userProfiles)
