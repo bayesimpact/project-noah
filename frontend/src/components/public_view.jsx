@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactMapboxGl, {Layer, Marker} from 'react-mapbox-gl'
 import {Link} from 'react-router'
+import Paper from 'material-ui/Paper'
 
 import config from 'config'
 import {store} from 'store/firebase'
@@ -24,14 +25,21 @@ class PublicView extends React.Component {
   render() {
     const {user} = this.props
     const {hazards} = this.state
+    const style = {
+      alignItems: 'center',
+      display: 'flex',
+      justifyContent: 'center',
+      flexDirection: 'column',
+    }
     const mapboxContainerStyle = {
       height: '100vh',
+      marginTop: 20,
       width: '100vw',
     }
     return (
-      <div>
-        <Link to="admin">Admin View</Link>
+      <div style={style}>
         {user ? <UserComponent user={user} /> : <Link to="/login">login or signup</Link>}
+        <Link style={{alignSelf: 'flex-end', marginRight: 20}} to="admin">Admin View</Link>
         <ReactMapboxGl
             style="mapbox://styles/mapbox/streets-v8"
             accessToken={config.mapboxAccessToken}
@@ -71,15 +79,17 @@ class UserComponent extends React.Component {
   render() {
     const {user} = this.props
     const {isRequestingLocation} = this.state
+    const style = {
+      padding: 20,
+    }
     return (
-      <div>
+      <Paper style={style}>
         <div>Hola {user.displayName}</div>
-        <button onClick={store.logout}>sign out</button>
         <UserPhoneNumber user={user} />
         {user.phoneNumber ? <button onClick={this.handleUpdateLocation}>
           {isRequestingLocation ? 'getting location' : 'update my location'}
         </button> : null}
-      </div>
+      </Paper>
     )
   }
 }
@@ -117,7 +127,9 @@ class UserPhoneNumber extends React.Component {
           <button onClick={this.handlePhoneUpdate}>submit</button>
         </div> : <div>
           <span>{user.phoneNumber}</span>
-          <button onClick={() => this.setState({isEditing: true})}>edit</button>
+          <button onClick={() => this.setState({isEditing: true, phoneNumber: user.phoneNumber})}>
+            edit
+          </button>
         </div>}
       </div>
     )

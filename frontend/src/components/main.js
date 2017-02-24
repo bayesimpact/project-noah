@@ -29,6 +29,7 @@ class AppComponent extends React.Component {
       display: 'flex',
       justifyContent: 'center',
       flexDirection: 'column',
+      fontFamily: 'Roboto',
     }
     return (
       <div style={appStyle}>
