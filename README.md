@@ -23,7 +23,8 @@ You first have to set the `FIREBASE_ADMIN_PRIVATE_KEY` environment variable. Ask
   docker-compose run --rm backend npm run dummy_data_importer
 ```
 
-To run the backend for data manipulation and preparation with Jupyter notebooks on `localhost:8888`:
+### Data Analysis
+To build the enviroment for data manipulation and preparation with Jupyter notebooks on `localhost:8889`:
 
 ```sh
   docker-compose up data-preparation

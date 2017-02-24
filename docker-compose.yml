@@ -38,10 +38,10 @@ services:
       image: data-preparation
       build:
         context: .
-        dockerfile: Dockerfile.data
+        dockerfile: ./data_analysis/Dockerfile
       command: start-notebook.sh --NotebookApp.token=''
       ports:
-        - 8888:8889
+        - 8889:8888
       volumes:
         - ./:/home/jovyan/work:rw
       environment:
