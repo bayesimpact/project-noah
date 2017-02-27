@@ -42,6 +42,6 @@ services:
       ports:
         - 8889:8888
       volumes:
-        - ./:/home/jovyan/work:rw
+        - ./data_analysis/notebooks/:/home/jovyan/work/notebooks
       environment:
         - PYTHONPATH=/home/jovyan/work
