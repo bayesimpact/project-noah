@@ -31,11 +31,13 @@ class AppComponent extends React.Component {
       flexDirection: 'column',
       fontFamily: 'Roboto',
     }
+    const logoutButton = <FlatButton onTouchTap={store.logout} label="logout" />
     return (
       <div style={appStyle}>
         <AppBar
             title="Project Noah ⛵"
-            iconElementRight={user ? <FlatButton label="logout" /> : null} />
+            iconElementLeft={<span />}
+            iconElementRight={user ? logoutButton : null} />
         <h2>This is going to be amazing!</h2>
         {children && React.cloneElement(children, this.state)}
       </div>
