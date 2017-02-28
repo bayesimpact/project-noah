@@ -4,6 +4,10 @@
     ".write": "auth != null",
     "notifications": {
       ".indexOn": "sent"
+    },
+    "data": {
+      ".read": true,
+      ".write": false
     }
   }
 }
