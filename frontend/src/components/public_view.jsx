@@ -2,6 +2,7 @@ import React from 'react'
 import ReactMapboxGl, {Layer, Marker} from 'react-mapbox-gl'
 import {Link} from 'react-router'
 import Paper from 'material-ui/Paper'
+import PlacesAutocomplete, {geocodeByAddress} from 'react-places-autocomplete'
 
 import config from 'config'
 import {store} from 'store/firebase'
@@ -64,21 +65,8 @@ class UserComponent extends React.Component {
     user: React.PropTypes.object,
   };
 
-  handleUpdateLocation = () => {
-    this.setState({isRequestingLocation: true})
-    navigator.geolocation.getCurrentPosition(location => {
-      this.setState({isRequestingLocation: false})
-      store.updateUserProfile({location: [location.coords.longitude, location.coords.latitude]})
-    })
-  }
-
-  state = {
-    isRequestingLocation: false,
-  }
-
   render() {
     const {user} = this.props
-    const {isRequestingLocation} = this.state
     const style = {
       padding: 20,
     }
@@ -86,10 +74,73 @@ class UserComponent extends React.Component {
       <Paper style={style}>
         <div>Hola {user.displayName}</div>
         <UserPhoneNumber user={user} />
-        {user.phoneNumber ? <button onClick={this.handleUpdateLocation}>
-          {isRequestingLocation ? 'getting location' : 'update my location'}
-        </button> : null}
+        {user.phoneNumber ? <UserLocationSelector address={user.address} /> : null}
       </Paper>
+    )
+  }
+}
+
+
+class UserLocationSelector extends React.Component {
+  static propTypes = {
+    address: React.PropTypes.string.isRequired,
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      isRequestingLocation: false,
+      address: props.address,
+    }
+  }
+
+  componentWillReceiveProps(nextProps, oldProps) {
+    if (nextProps.address !== oldProps.address) {
+      this.setState({address: nextProps.address})
+    }
+  }
+
+  handleBrowserLocationClick = () => {
+    this.setState({isRequestingLocation: true})
+    navigator.geolocation.getCurrentPosition(location => {
+      this.setState({isRequestingLocation: false})
+      // TODO: Use reverse geocoding to fill the address field.
+      store.updateUserProfile({
+        address: '',
+        location: [location.coords.longitude, location.coords.latitude],
+      })
+    })
+  }
+
+
+  handlePlacesSelect = (address) => {
+    geocodeByAddress(address,  (err, {lat, lng}) => {
+      store.updateUserProfile({
+        address,
+        location: [lng, lat],
+      })
+    })
+  }
+
+  render() {
+    const {address, isRequestingLocation} = this.state
+    return (
+      <div style={{display: 'flex'}}>
+        <div>
+          <div>Enter your address</div>
+          <PlacesAutocomplete
+                value={address}
+                onSelect={this.handlePlacesSelect}
+                onChange={(address) => this.setState({address})} />
+        </div>
+        <div style={{padding: 20}}>or</div>
+        <div>
+          <div>Browser geolocation</div>
+          <button onClick={this.handleBrowserLocationClick}>
+            {isRequestingLocation ? 'getting location' : 'update my location'}
+          </button>
+        </div>
+      </div>
     )
   }
 }
