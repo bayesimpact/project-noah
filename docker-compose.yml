@@ -33,7 +33,6 @@ services:
       - "3005:80"
     environment:
       - FIREBASE_TOKEN
-
   data-preparation:
       image: data-preparation
       build:
@@ -43,5 +42,6 @@ services:
         - 8889:8888
       volumes:
         - ./data_analysis/notebooks/:/home/jovyan/work/notebooks
+        - ./data_analysis/data/:/home/jovyan/work/data
       environment:
         - PYTHONPATH=/home/jovyan/work

@@ -16,3 +16,6 @@ dist
 
 # Logs
 *.log
+
+# Data files.
+/data_analysis/data/watches.json
