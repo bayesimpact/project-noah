@@ -43,5 +43,7 @@ services:
       volumes:
         - ./data_analysis/notebooks/:/home/jovyan/work/notebooks
         - ./data_analysis/data/:/home/jovyan/work/data
+        - ./data_analysis/watches_importer.py:/home/jovyan/work/watches_importer.py:ro
       environment:
         - PYTHONPATH=/home/jovyan/work
+        - FIREBASE_ADMIN_PRIVATE_KEY
