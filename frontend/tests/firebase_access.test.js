@@ -59,11 +59,11 @@ describe('userProfiles security rules', () => {
   })
 
   test('an admin should be able to read from all user profiles', () => {
-    expect({uid: 'admin-user'}).can.read.path('/userProfiles/other-user')
+    expect({uid: 'admin-user'}).can.read.path('/userProfiles')
   })
 
   test('an admin should not be able to write to user profiles', () => {
-    expect({uid: 'admin-user'}).cannot.write('something').to.path('/userProfiles/other-user')
+    expect({uid: 'admin-user'}).cannot.write('something').to.path('/userProfiles')
   })
 })
 
