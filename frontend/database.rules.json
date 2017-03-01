@@ -1,13 +1,25 @@
 {
   "rules": {
-    ".read": "auth != null",
-    ".write": "auth != null",
-    "notifications": {
-      ".indexOn": "sent"
+    "admins": {
+      "$uid": {
+        ".read": "$uid === auth.uid"
+      },
+      ".write": false
     },
     "data": {
       ".read": true,
       ".write": false
+    },
+    "notifications": {
+      ".indexOn": "sent",
+      ".read": false,
+      ".write": "root.child('admins').child(auth.uid).val() === true"
+    },
+    "userProfiles": {
+      "$uid": {
+        ".read": "$uid === auth.uid || root.child('admins').child(auth.uid).val() === true",
+        ".write": "$uid === auth.uid"
+      }
     }
   }
 }

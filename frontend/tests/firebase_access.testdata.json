@@ -1,0 +1,10 @@
+{
+  "users": {
+    "normal-user": {},
+    "admin-user": {},
+    "other-user": {}
+  },
+  "admins": {
+    "admin-user": true
+  }
+}
