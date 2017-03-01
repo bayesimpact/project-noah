@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactMapboxGl, {Layer, Marker} from 'react-mapbox-gl'
-import {Link} from 'react-router'
 import PlacesAutocomplete, {geocodeByAddress} from 'react-places-autocomplete'
+import {Link} from 'react-router'
 
 import config from 'config'
 import {store} from 'store/firebase'
@@ -18,24 +18,13 @@ class PublicView extends React.Component {
 
   componentWillMount() {
     store.getHazards(hazards => this.setState({hazards}))
-    if (this.props.user) {
-      store.getUserIsAdmin(this.props.user, isAdmin => this.setState({isAdmin}))
-    }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.user) {
-      store.getUserIsAdmin(nextProps.user, isAdmin => this.setState({isAdmin}))
-    }
-  }
-
-  state = {
-    isAdmin: false,
-  }
+  state = {}
 
   render() {
     const {user} = this.props
-    const {hazards, isAdmin} = this.state
+    const {hazards} = this.state
     const style = {
       alignItems: 'center',
       display: 'flex',
@@ -47,14 +36,9 @@ class PublicView extends React.Component {
       marginTop: 20,
       width: '100vw',
     }
-    const adminLinkStyle = {
-      alignSelf: 'flex-end',
-      marginRight: 20,
-    }
     return (
       <div style={style}>
         {user ? <UserComponent user={user} /> : <Link to="/login">login or signup</Link>}
-        {isAdmin ? <Link style={adminLinkStyle} to="admin">Admin View</Link> : null}
         <ReactMapboxGl
             style="mapbox://styles/mapbox/streets-v8"
             accessToken={config.mapboxAccessToken}
