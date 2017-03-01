@@ -10,7 +10,14 @@ import {AppComponent} from './components/main'
 import {PublicView} from './components/public_view'
 import {AdminView} from './components/admin_view'
 import {LoginPage} from './components/login_page'
+import {store} from 'store/firebase'
 
+
+function requireAdmin(nextState, replaceState) {
+  if (!store.isAdmin) {
+    replaceState({}, '/')
+  }
+}
 
 const routes = {
   path: '/',
@@ -26,6 +33,7 @@ const routes = {
     {
       path: 'admin',
       component: AdminView,
+      onEnter: requireAdmin,
     },
   ],
 }

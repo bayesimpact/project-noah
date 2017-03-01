@@ -14,6 +14,7 @@ const configuredFirebase = firebase.initializeApp(firebaseConfig)
 const db = configuredFirebase.database()
 var configuredFirebaseUi = new firebaseui.auth.AuthUI(configuredFirebase.auth())
 
+// TODO: Replace this ad-hoc solution by a Redux store.
 const store = {
   getHazards: function(callback) {
     db.ref('/data/hazards').on('value', snapshot => {
@@ -25,6 +26,11 @@ const store = {
       callback(snapshot.val())
     })
   },
+  getUserIsAdmin: function(user, callback) {
+    db.ref(`/admins/${user.uid}`).on('value', snapshot => {
+      callback(snapshot.val())
+    })
+  },
   loginChanged: function(callback) {
     configuredFirebase.auth().onAuthStateChanged(user => {
       this.user = user
@@ -32,6 +38,9 @@ const store = {
         db.ref(`/userProfiles/${user.uid}`).on('value', snapshot => {
           this.user = {...this.user, ...snapshot.val()}
           callback(this.user)
+        })
+        db.ref(`/admins/${user.uid}`).on('value', snapshot => {
+          this.isAdmin = snapshot.val()
         })
       }
       callback(user)
