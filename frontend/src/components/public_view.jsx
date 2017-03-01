@@ -52,7 +52,8 @@ class PublicView extends React.Component {
     }
     return (
       <div style={style}>
-        {user ? <UserComponent user={user} /> : <Link to="/login">login or signup</Link>}
+        {user && !user.isLoadingProfile && !user.termsAccepted ? <ProfileModal /> : null}
+        {user && user.termsAccepted ? <UserComponent user={user} /> : null}
         <ReactMapboxGl
             style="mapbox://styles/mapbox/streets-v8"
             accessToken={config.mapboxAccessToken}
@@ -79,6 +80,71 @@ class PublicView extends React.Component {
 }
 
 
+class ProfileModal extends React.Component {
+
+  state = {
+    notificationsActive: true,
+    phoneNumber: '',
+    termsAccepted: false,
+  }
+
+  handleSubmit = () => {
+    const {notificationsActive, phoneNumber, termsAccepted} = this.state
+    store.updateUserProfile({notificationsActive, phoneNumber, termsAccepted})
+  }
+
+  render() {
+    const {notificationsActive, phoneNumber, termsAccepted} = this.state
+    const profileModalStyle = {
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      zIndex: 1,
+    }
+    const contentContainerStyle = {
+      width: 500,
+      backgroundColor: '#fff',
+      padding: '0 50px 50px 50px',
+    }
+    // TODO: Add validation of the phone number.
+    return (
+      <div style={profileModalStyle}>
+        <div style={contentContainerStyle}>
+          <h2 style={{textAlign: 'center'}}>Profile</h2>
+
+          <label htmlFor="phone-number">Phone Number</label>
+          <input
+            id="phone-number" name="phone-number" type="text" value={phoneNumber}
+            onChange={event => this.setState({phoneNumber: event.target.value})} />
+
+          <input
+              id="terms-accepted" type="checkbox" checked={termsAccepted}
+              onChange={() => this.setState({termsAccepted: !termsAccepted})} />
+          <label htmlFor="terms-accepted">I accept that my location is going to be stored.</label>
+
+          <input
+              id="notifications-active" type="checkbox" checked={notificationsActive}
+              onChange={() => this.setState({notificationsActive: !notificationsActive})} />
+          <label htmlFor="notifications-active">I want to receive hazard notifications</label>
+
+          <button
+              style={{marginTop: 20}}
+              className={termsAccepted ? '' : 'usa-button-disabled'}
+              onClick={this.handleSubmit}
+              disabled={!termsAccepted}>Submit</button>
+        </div>
+      </div>
+    )
+  }
+}
+
+
 class UserComponent extends React.Component {
   static propTypes = {
     user: React.PropTypes.object,
@@ -91,9 +157,7 @@ class UserComponent extends React.Component {
     }
     return (
       <div style={style}>
-        <div>Hola {user.displayName}</div>
-        <UserPhoneNumber user={user} />
-        {user.phoneNumber ? <UserLocationSelector address={user.address} /> : null}
+        <UserLocationSelector address={user.address} />
       </div>
     )
   }
@@ -165,46 +229,5 @@ class UserLocationSelector extends React.Component {
   }
 }
 
-
-class UserPhoneNumber extends React.Component {
-  static propTypes = {
-    user: React.PropTypes.object,
-  };
-
-  handlePhoneUpdate = () => {
-    // TODO: Add validation of the phone number.
-    const {phoneNumber} = this.state
-    store.updateUserProfile({phoneNumber})
-    this.setState({isEditing: false})
-  }
-
-  state = {
-    isEditing: false,
-    phoneNumber: '',
-  }
-
-  render() {
-    const {user} = this.props
-    const {isEditing, phoneNumber} = this.state
-    const isEditViewShown = isEditing || !user.phoneNumber
-    return (
-      <div>
-        {isEditViewShown ? <div>
-          <div>{user.phoneNumber ? 'Edit ' : 'Add '}phone number</div>
-          <div>full phone number with country code, e.g: +33768517681</div>
-          <input
-              type="text" value={phoneNumber || user.phoneNumber}
-              onChange={event => this.setState({phoneNumber: event.target.value})} />
-          <button onClick={this.handlePhoneUpdate}>submit</button>
-        </div> : <div>
-          <span>{user.phoneNumber}</span>
-          <button onClick={() => this.setState({isEditing: true, phoneNumber: user.phoneNumber})}>
-            edit
-          </button>
-        </div>}
-      </div>
-    )
-  }
-}
 
 export {PublicView}

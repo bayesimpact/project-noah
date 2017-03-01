@@ -35,17 +35,17 @@ const store = {
   },
   loginChanged: function(callback) {
     configuredFirebase.auth().onAuthStateChanged(user => {
-      this.user = user
+      this.user = {...user, isLoadingProfile: true}
       if (user) {
         db.ref(`/userProfiles/${user.uid}`).on('value', snapshot => {
-          this.user = {...this.user, ...snapshot.val()}
+          this.user = {...this.user, ...snapshot.val(), isLoadingProfile: false}
           callback(this.user)
         })
         db.ref(`/admins/${user.uid}`).on('value', snapshot => {
           this.isAdmin = snapshot.val()
         })
       }
-      callback(user)
+      callback(this.user)
     })
   },
   logout: function() {
