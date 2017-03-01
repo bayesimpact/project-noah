@@ -66,8 +66,10 @@ class PublicView extends React.Component {
     }
     return (
       <div style={style}>
-        {user && !user.phoneNumber ? <ProfileModal /> : null}
-        {user ? <UserComponent user={user} /> : <Link to="/login">login or signup</Link>}
+        {user && !user.isLoadingProfile && !user.termsAccepted ? <ProfileModal /> : null}
+        {user && user.termsAccepted ?
+          <UserComponent user={user} /> :
+          <Link to="/login">login or signup</Link>}
         {isAdmin ? <Link style={adminLinkStyle} to="admin">Admin View</Link> : null}
         <ReactMapboxGl
             style="mapbox://styles/mapbox/streets-v8"
@@ -104,8 +106,8 @@ class ProfileModal extends React.Component {
   }
 
   handleSubmit = () => {
-    const {notificationsActive, phoneNumber} = this.state
-    store.updateUserProfile({notificationsActive, phoneNumber})
+    const {notificationsActive, phoneNumber, termsAccepted} = this.state
+    store.updateUserProfile({notificationsActive, phoneNumber, termsAccepted})
   }
 
   render() {
