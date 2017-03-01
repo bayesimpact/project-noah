@@ -60,6 +60,7 @@
   },
   "dependencies": {
     "core-js": "2.0.0",
+    "d3-scale": "1.0.4",
     "firebase": "3.6.8",
     "firebase-tools": "3.2.2",
     "firebaseui": "1.0.0",
