@@ -106,7 +106,7 @@ class UserLocationSelector extends React.Component {
       this.setState({isRequestingLocation: false})
       // TODO: Use reverse geocoding to fill the address field.
       store.updateUserProfile({
-        address: '',
+        address: `${location.coords.longitude}, ${location.coords.latitude}`,
         location: [location.coords.longitude, location.coords.latitude],
       })
     })
@@ -114,6 +114,7 @@ class UserLocationSelector extends React.Component {
 
 
   handlePlacesSelect = (address) => {
+    // TODO: Add error handling.
     geocodeByAddress(address,  (err, {lat, lng}) => {
       store.updateUserProfile({
         address,
@@ -129,15 +130,15 @@ class UserLocationSelector extends React.Component {
         <div>
           <div>Enter your address</div>
           <PlacesAutocomplete
-                value={address}
-                onSelect={this.handlePlacesSelect}
-                onChange={(address) => this.setState({address})} />
+              value={address}
+              onSelect={this.handlePlacesSelect}
+              onChange={address => this.setState({address})} />
         </div>
         <div style={{padding: 20}}>or</div>
         <div>
           <div>Browser geolocation</div>
           <button onClick={this.handleBrowserLocationClick}>
-            {isRequestingLocation ? 'getting location' : 'update my location'}
+            {isRequestingLocation ? 'getting location…' : 'update my location'}
           </button>
         </div>
       </div>
