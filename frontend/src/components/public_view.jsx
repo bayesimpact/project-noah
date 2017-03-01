@@ -1,7 +1,9 @@
 import React from 'react'
-import ReactMapboxGl, {Layer, Marker} from 'react-mapbox-gl'
+import ReactMapboxGl, {Layer, Marker, Feature} from 'react-mapbox-gl'
 import {Link} from 'react-router'
 import PlacesAutocomplete, {geocodeByAddress} from 'react-places-autocomplete'
+import _ from 'underscore'
+import {schemeCategory20} from 'd3-scale'
 
 import config from 'config'
 import {store} from 'store/firebase'
@@ -17,7 +19,16 @@ class PublicView extends React.Component {
   };
 
   componentWillMount() {
-    store.getHazards(hazards => this.setState({hazards}))
+    store.getHazards(hazards => {
+      const groupedHazards = _.groupBy(hazards, hazard => hazard.properties.prod_type)
+      const sortedHazardNames = _.sortBy(Object.keys(groupedHazards), hazardName => {
+        return -groupedHazards[hazardName].length
+      })
+      const hazardColorMapping = _.object(sortedHazardNames.map((name, i) => {
+        return [name, i < 19 ? schemeCategory20[i] : schemeCategory20[19]]
+      }))
+      this.setState({groupedHazards, hazardColorMapping})
+    })
     if (this.props.user) {
       store.getUserIsAdmin(this.props.user, isAdmin => this.setState({isAdmin}))
     }
@@ -30,12 +41,14 @@ class PublicView extends React.Component {
   }
 
   state = {
+    groupedHazards: null,
+    hazardColorMapping: null,
     isAdmin: false,
   }
 
   render() {
     const {user} = this.props
-    const {hazards, isAdmin} = this.state
+    const {groupedHazards, hazardColorMapping, isAdmin} = this.state
     const style = {
       alignItems: 'center',
       display: 'flex',
@@ -64,9 +77,16 @@ class PublicView extends React.Component {
           <Layer type="symbol" id="marker" layout={{'icon-image': 'marker-15'}}>
             {user && user.location ? <Marker coordinates={user.location} /> : null}
           </Layer>
-          <Layer type="symbol" id="hazards" layout={{'icon-image': 'fire-station-15'}}>
-            {(hazards || []).map((coordinates, i) => <Marker key={i} coordinates={coordinates} />)}
-          </Layer>
+          {_.map(groupedHazards, (hazards, name) => {
+            return <Layer
+                key={name}
+                type="fill"
+                paint={{'fill-color': hazardColorMapping[name], 'fill-opacity': .7}}>
+              {(hazards || []).map((hazard, i) => {
+                return <Feature key={i} coordinates={[hazard.geometry.coordinates]} />
+              })}
+            </Layer>
+          })}
         </ReactMapboxGl>
       </div>
     )

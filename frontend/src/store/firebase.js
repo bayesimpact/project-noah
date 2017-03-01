@@ -17,7 +17,9 @@ var configuredFirebaseUi = new firebaseui.auth.AuthUI(configuredFirebase.auth())
 // TODO: Replace this ad-hoc solution by a Redux store.
 const store = {
   getHazards: function(callback) {
-    db.ref('/data/hazards').on('value', snapshot => {
+    // Current hazards are extracted from an API which calls them _watches_.
+    // Please see hazard_watches_api.ipynb for details.
+    db.ref('/data/watches').on('value', snapshot => {
       callback(snapshot.val())
     })
   },
