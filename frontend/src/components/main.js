@@ -43,7 +43,11 @@ class AppComponent extends React.Component {
         <header style={headerStyle}>
           <span>Project Noah ⛵</span>
           <span style={{flex: 1}} />
-          {user ? <Menu style={menuStyle} user={user} path={location.pathname} /> : null}
+          {user ?
+            <Menu style={menuStyle} user={user} path={location.pathname} /> :
+            <button onClick={() => browserHistory.push('/login')} style={{marginRight: 20}}>
+              Log in or sign up to receive alerts
+            </button>}
         </header>
         {children && React.cloneElement(children, this.state)}
       </div>
@@ -79,7 +83,7 @@ class Menu extends React.Component {
 
   state = {
     isAdmin: false,
-    isExpanded: true,
+    isExpanded: false,
   }
 
   render() {
