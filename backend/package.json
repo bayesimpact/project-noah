@@ -4,8 +4,7 @@
   "description": "Project Noah Backend",
   "main": "index.js",
   "scripts": {
-    "lint": "./node_modules/eslint/bin/eslint.js .",
-    "dummy_data_importer": "node dummy_data_importer.js"
+    "lint": "./node_modules/eslint/bin/eslint.js ."
   },
   "author": "stephan@bayes.org",
   "dependencies": {

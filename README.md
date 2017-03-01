@@ -15,12 +15,10 @@ To run the frontend in development mode on `localhost:3005`:
 
 ### Backend
 
-To run the dummy data importer
-
-You first have to set the `FIREBASE_ADMIN_PRIVATE_KEY` environment variable. Ask Stephan to get the right value for it. Then simply run:
+To run the notification handler which will send our SMS through Twilio, you first have to set the `FIREBASE_ADMIN_PRIVATE_KEY` environment variable. Ask Stephan to get the right value for it. Then simply run:
 
 ```sh
-  docker-compose run --rm backend npm run dummy_data_importer
+  docker-compose run --rm backend node notification_handler.js
 ```
 
 ### Data Analysis
