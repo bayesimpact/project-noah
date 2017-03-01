@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactMapboxGl, {Layer, Marker} from 'react-mapbox-gl'
 import {Link} from 'react-router'
-import Paper from 'material-ui/Paper'
 import PlacesAutocomplete, {geocodeByAddress} from 'react-places-autocomplete'
 
 import config from 'config'
@@ -86,11 +85,11 @@ class UserComponent extends React.Component {
       padding: 20,
     }
     return (
-      <Paper style={style}>
+      <div style={style}>
         <div>Hola {user.displayName}</div>
         <UserPhoneNumber user={user} />
         {user.phoneNumber ? <UserLocationSelector address={user.address} /> : null}
-      </Paper>
+      </div>
     )
   }
 }

@@ -50,6 +50,8 @@ const muiTheme = getMuiTheme({
 
 class MyRouter extends React.Component {
 
+  // TODO: Remove the MuiThemeProvider when I got completely rid of material-ui.
+  // Currently the Dialog is still used in the admin view.
   render() {
     return <MuiThemeProvider muiTheme={muiTheme}>
       <Router history={browserHistory} routes={routes} />

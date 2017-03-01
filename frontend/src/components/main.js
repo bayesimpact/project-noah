@@ -1,9 +1,8 @@
 require('normalize.css/normalize.css')
+require('uswds/dist/css/uswds.css')
 
 import injectTapEventPlugin from 'react-tap-event-plugin'
 import React from 'react'
-import AppBar from 'material-ui/AppBar'
-import FlatButton from 'material-ui/FlatButton'
 
 import {store} from 'store/firebase'
 
@@ -29,16 +28,22 @@ class AppComponent extends React.Component {
       display: 'flex',
       justifyContent: 'center',
       flexDirection: 'column',
-      fontFamily: 'Roboto',
     }
-    const logoutButton = <FlatButton onTouchTap={store.logout} label="logout" />
+    const logoutButtonStyle = {
+      position: 'absolute',
+      top: 10,
+      right: 10,
+    }
+
     return (
       <div style={appStyle}>
-        <AppBar
-            title="Project Noah ⛵"
-            iconElementLeft={<span />}
-            iconElementRight={user ? logoutButton : null} />
+        <header style={{fontSize: 36, padding: 20}}>
+          Project Noah ⛵
+        </header>
         <h2>This is going to be amazing!</h2>
+        {user ? <button style={logoutButtonStyle} onTouchTap={store.logout}>
+          logout
+        </button> : null}
         {children && React.cloneElement(children, this.state)}
       </div>
     )
