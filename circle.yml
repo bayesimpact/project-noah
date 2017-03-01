@@ -11,6 +11,7 @@ test:
   override:
     - docker-compose run frontend npm run lint
     - docker-compose run frontend npm run lint:json
+    - docker-compose run frontend npm test
     - docker-compose run backend npm run lint
 deployment:
   firebase:

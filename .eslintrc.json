@@ -21,6 +21,7 @@
     "browser": true,
     "amd": true,
     "es6": true,
+    "jest": true,
     "node": true
   },
   "rules": {

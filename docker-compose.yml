@@ -18,6 +18,7 @@ services:
     volumes:
       - ./frontend/cfg:/usr/app/cfg:ro
       - ./frontend/src:/usr/app/src:ro
+      - ./frontend/tests:/usr/app/tests:ro
       - ./frontend/package.json:/usr/app/package.json:ro
       - ./frontend/server.js:/usr/app/server.js:ro
       - ./frontend/webpack.config.js:/usr/app/webpack.config.js:ro
