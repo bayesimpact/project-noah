@@ -6,5 +6,5 @@ WORKDIR /usr/app
 COPY package.json .
 RUN npm install
 
-COPY dummy_data_importer.js /usr/app/
+COPY notification_handler.js /usr/app/
 CMD npm start
