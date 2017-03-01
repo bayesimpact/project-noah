@@ -21,11 +21,17 @@ class PublicView extends React.Component {
     store.getHazards(hazards => this.setState({hazards}))
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.user) {
+      store.getUserIsAdmin(nextProps.user, isAdmin => this.setState({isAdmin}))
+    }
+  }
+
   state = {}
 
   render() {
     const {user} = this.props
-    const {hazards} = this.state
+    const {hazards, isAdmin} = this.state
     const style = {
       alignItems: 'center',
       display: 'flex',
@@ -37,10 +43,14 @@ class PublicView extends React.Component {
       marginTop: 20,
       width: '100vw',
     }
+    const adminLinkStyle = {
+      alignSelf: 'flex-end',
+      marginRight: 20,
+    }
     return (
       <div style={style}>
         {user ? <UserComponent user={user} /> : <Link to="/login">login or signup</Link>}
-        <Link style={{alignSelf: 'flex-end', marginRight: 20}} to="admin">Admin View</Link>
+        {isAdmin ? <Link style={adminLinkStyle} to="admin">Admin View</Link> : null}
         <ReactMapboxGl
             style="mapbox://styles/mapbox/streets-v8"
             accessToken={config.mapboxAccessToken}

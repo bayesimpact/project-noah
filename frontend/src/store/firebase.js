@@ -25,6 +25,11 @@ const store = {
       callback(snapshot.val())
     })
   },
+  getUserIsAdmin: function(user, callback) {
+    db.ref(`/admins/${user.uid}`).on('value', snapshot => {
+      callback(snapshot.val())
+    })
+  },
   loginChanged: function(callback) {
     configuredFirebase.auth().onAuthStateChanged(user => {
       this.user = user
@@ -32,6 +37,9 @@ const store = {
         db.ref(`/userProfiles/${user.uid}`).on('value', snapshot => {
           this.user = {...this.user, ...snapshot.val()}
           callback(this.user)
+        })
+        db.ref(`/admins/${user.uid}`).on('value', snapshot => {
+          this.isAdmin = snapshot.val()
         })
       }
       callback(user)
