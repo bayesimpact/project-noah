@@ -117,6 +117,11 @@ class ProfileModal extends React.Component {
       <div style={profileModalStyle}>
         <div style={contentContainerStyle}>
           <h2 style={{textAlign: 'center'}}>Profile</h2>
+          <p>
+            Please add your phone number below.
+            After setting your location on the main page, we are going to alert you
+            via SMS when there is a hazard warning close to you.
+          </p>
 
           <label htmlFor="phone-number">Phone Number</label>
           <input
