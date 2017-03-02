@@ -2,9 +2,6 @@ import 'core-js/fn/object/assign'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import {Router, browserHistory} from 'react-router'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import getMuiTheme from 'material-ui/styles/getMuiTheme'
-import {lightBlue500, lightBlue700, grey400, deepOrangeA200} from 'material-ui/styles/colors'
 
 import {AppComponent} from './components/main'
 import {PublicView} from './components/public_view'
@@ -38,24 +35,10 @@ const routes = {
   ],
 }
 
-const muiTheme = getMuiTheme({
-  palette: {
-    primary1Color: lightBlue500,
-    primary2Color: lightBlue700,
-    primary3Color: grey400,
-    accent1Color: deepOrangeA200,
-  },
-})
-
-
 class MyRouter extends React.Component {
 
-  // TODO: Remove the MuiThemeProvider when I got completely rid of material-ui.
-  // Currently the Dialog is still used in the admin view.
   render() {
-    return <MuiThemeProvider muiTheme={muiTheme}>
-      <Router history={browserHistory} routes={routes} />
-    </MuiThemeProvider>
+    return <Router history={browserHistory} routes={routes} />
   }
 }
 
