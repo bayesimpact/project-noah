@@ -65,7 +65,7 @@ class PublicView extends React.Component {
                 style={legendStyle}
                 colorMapping={hazardColorMapping} sortedNames={sortedHazardNames} /> : null}
           <HazardMap
-              style={mapboxContainerStyle} user={user}
+              style={mapboxContainerStyle}
               center={user && user.location || START_LOCATION}
               zoom={user && user.location ? [7] : [4]}
               groupedHazards={groupedHazards} hazardColorMapping={hazardColorMapping}>

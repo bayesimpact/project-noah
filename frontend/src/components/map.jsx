@@ -9,19 +9,17 @@ class HazardMap extends React.Component {
     style: React.PropTypes.object,
     groupedHazards: React.PropTypes.object,
     hazardColorMapping: React.PropTypes.object,
-    zoom: React.PropTypes.array,
-    center: React.PropTypes.array.isRequired,
-    children: React.PropTypes.element,
+    children: React.PropTypes.node,
   }
 
   render() {
-    const {children, style, groupedHazards, hazardColorMapping, zoom, center} = this.props
+    const {children, style, groupedHazards, hazardColorMapping} = this.props
     return (
       <ReactMapboxGl
-          style="mapbox://styles/mapbox/streets-v8"
           accessToken={config.mapboxAccessToken}
-          center={center} zoom={zoom}
-          containerStyle={style}>
+          containerStyle={style}
+          {...this.props}
+          style="mapbox://styles/mapbox/streets-v8">
         {children}
         {_.map(groupedHazards || {}, (hazards, name) => {
           return <Layer
