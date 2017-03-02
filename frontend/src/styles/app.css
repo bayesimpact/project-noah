@@ -1,0 +1,13 @@
+/*  Base Application Styles  */
+.blink {
+  animation: blinker 0.7s cubic-bezier(0.8, 0.01, 0.26, 0.98) infinite alternate;
+}
+
+@keyframes blinker {
+  from {
+    opacity: 0.9;
+  }
+  to {
+    opacity: 0.2;
+  }
+}

@@ -1,4 +1,5 @@
 require('normalize.css/normalize.css')
+require('styles/app.css')
 require('uswds/dist/css/uswds.css')
 
 import injectTapEventPlugin from 'react-tap-event-plugin'

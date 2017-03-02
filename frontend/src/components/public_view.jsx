@@ -1,9 +1,10 @@
 import React from 'react'
 import ReactMapboxGl, {Layer, Marker, Feature} from 'react-mapbox-gl'
-import {Link} from 'react-router'
 import PlacesAutocomplete, {geocodeByAddress} from 'react-places-autocomplete'
 import _ from 'underscore'
 import {schemeCategory20} from 'd3-scale'
+import SearchIcon from 'react-icons/lib/md/search'
+import LocationIcon from 'react-icons/lib/md/my-location'
 
 import config from 'config'
 import {store} from 'store/firebase'
@@ -39,41 +40,45 @@ class PublicView extends React.Component {
   render() {
     const {user} = this.props
     const {groupedHazards, hazardColorMapping} = this.state
-    const style = {
-      alignItems: 'center',
-      display: 'flex',
-      justifyContent: 'center',
-      flexDirection: 'column',
+    const locationSelectorStyle = {
+      heigth: 55,
+      left: 30,
+      position: 'absolute',
+      top: 30,
+      width: 600,
+      zIndex: 1,
     }
     const mapboxContainerStyle = {
       height: '100vh',
-      marginTop: 20,
       width: '100vw',
     }
     return (
-      <div style={style}>
+      <div>
         {user && !user.isLoadingProfile && !user.termsAccepted ? <ProfileModal /> : null}
-        {user && user.termsAccepted ? <UserComponent user={user} /> : null}
-        <ReactMapboxGl
-            style="mapbox://styles/mapbox/streets-v8"
-            accessToken={config.mapboxAccessToken}
-            center={user && user.location || START_LOCATION}
-            containerStyle={mapboxContainerStyle}
-            zoom={user && user.location ? [7] : [4]}>
-          <Layer type="symbol" id="marker" layout={{'icon-image': 'marker-15'}}>
-            {user && user.location ? <Marker coordinates={user.location} /> : null}
-          </Layer>
-          {_.map(groupedHazards, (hazards, name) => {
-            return <Layer
-                key={name}
-                type="fill"
-                paint={{'fill-color': hazardColorMapping[name], 'fill-opacity': .7}}>
-              {(hazards || []).map((hazard, i) => {
-                return <Feature key={i} coordinates={[hazard.geometry.coordinates]} />
-              })}
+        <div style={{position: 'relative'}}>
+          {user && user.termsAccepted ?
+            <UserLocationSelector style={locationSelectorStyle} address={user.address} /> : null}
+          <ReactMapboxGl
+              style="mapbox://styles/mapbox/streets-v8"
+              accessToken={config.mapboxAccessToken}
+              center={user && user.location || START_LOCATION}
+              containerStyle={mapboxContainerStyle}
+              zoom={user && user.location ? [7] : [4]}>
+            <Layer type="symbol" id="marker" layout={{'icon-image': 'marker-15'}}>
+              {user && user.location ? <Marker coordinates={user.location} /> : null}
             </Layer>
-          })}
-        </ReactMapboxGl>
+            {_.map(groupedHazards, (hazards, name) => {
+              return <Layer
+                  key={name}
+                  type="fill"
+                  paint={{'fill-color': hazardColorMapping[name], 'fill-opacity': .7}}>
+                {(hazards || []).map((hazard, i) => {
+                  return <Feature key={i} coordinates={[hazard.geometry.coordinates]} />
+                })}
+              </Layer>
+            })}
+          </ReactMapboxGl>
+        </div>
       </div>
     )
   }
@@ -145,28 +150,10 @@ class ProfileModal extends React.Component {
 }
 
 
-class UserComponent extends React.Component {
-  static propTypes = {
-    user: React.PropTypes.object,
-  };
-
-  render() {
-    const {user} = this.props
-    const style = {
-      padding: 20,
-    }
-    return (
-      <div style={style}>
-        <UserLocationSelector address={user.address} />
-      </div>
-    )
-  }
-}
-
-
 class UserLocationSelector extends React.Component {
   static propTypes = {
     address: React.PropTypes.string.isRequired,
+    style: React.PropTypes.object,
   }
 
   constructor(props) {
@@ -195,7 +182,6 @@ class UserLocationSelector extends React.Component {
     })
   }
 
-
   handlePlacesSelect = (address) => {
     // TODO: Add error handling.
     geocodeByAddress(address,  (err, {lat, lng}) => {
@@ -208,21 +194,43 @@ class UserLocationSelector extends React.Component {
 
   render() {
     const {address, isRequestingLocation} = this.state
+    const {style} = this.props
+    const containerStyle = {
+      backgroundColor: '#fff',
+      boxShadow: '0 0 5px 0 rgba(0, 0, 0, 0.25)',
+      display: 'flex',
+      ...style,
+    }
+    const iconBox = {
+      alignItems: 'center',
+      display: 'flex',
+      fontSize: 20,
+      justifyContent: 'center',
+      width: 60,
+    }
+    const autocompleteStyles = {
+      root: {
+        flex: 1,
+      },
+      input: {
+        border: 'none',
+      },
+    }
+    const borderStyle = '1px solid #f1f1f1'
     return (
-      <div style={{display: 'flex'}}>
-        <div>
-          <div>Enter your address</div>
-          <PlacesAutocomplete
-              value={address}
-              onSelect={this.handlePlacesSelect}
-              onChange={address => this.setState({address})} />
-        </div>
-        <div style={{padding: 20}}>or</div>
-        <div>
-          <div>Browser geolocation</div>
-          <button onClick={this.handleBrowserLocationClick}>
-            {isRequestingLocation ? 'getting location…' : 'update my location'}
-          </button>
+      <div style={containerStyle}>
+        <div style={{...iconBox, borderRight: borderStyle}}><SearchIcon /></div>
+        <PlacesAutocomplete
+            value={address}
+            styles={autocompleteStyles}
+            placeholder="Enter your address"
+            onSelect={this.handlePlacesSelect}
+            onChange={address => this.setState({address})} />
+        <div
+            className={isRequestingLocation ? 'blink' : null}
+            style={{...iconBox, cursor: 'pointer', borderLeft: borderStyle}}
+            onClick={this.handleBrowserLocationClick}>
+          <LocationIcon />
         </div>
       </div>
     )
