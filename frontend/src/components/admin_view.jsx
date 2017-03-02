@@ -1,7 +1,7 @@
 import React from 'react'
-import {Marker} from 'react-mapbox-gl'
-import haversine from 'haversine'
-import Dialog from 'material-ui/Dialog'
+import {Marker, Popup} from 'react-mapbox-gl'
+import turfInside from '@turf/inside'
+import turf from '@turf/helpers'
 
 import {store} from 'store/firebase'
 import {HazardMap} from 'components/map'
@@ -9,7 +9,6 @@ import {HazardMap} from 'components/map'
 
 // Center of the US (lng, lat).
 const START_LOCATION = [-96.328530, 38.321018]
-const PROXIMITY_THRESHOLD = 50
 
 
 class AdminView extends React.Component {
@@ -21,8 +20,8 @@ class AdminView extends React.Component {
     store.getUserProfiles(userProfiles => {
       this.setState({userProfiles}, this.computeProximity)
     })
-    store.getHazards(({groupedHazards, hazardColorMapping}) => {
-      this.setState({groupedHazards, hazardColorMapping})
+    store.getHazards(({groupedHazards, hazardColorMapping, hazards}) => {
+      this.setState({groupedHazards, hazardColorMapping, hazards})
     })
   }
 
@@ -30,11 +29,14 @@ class AdminView extends React.Component {
     zoomLevel: 4,
     openedHazard: null,
     groupedHazards: null,
+    hazards: null,
     hazardColorMapping: null,
+    userProfiles: null,
   }
 
   render() {
-    const {groupedHazards, hazardColorMapping, openedHazard, userProfiles, zoomLevel} = this.state
+    const {groupedHazards, hazardColorMapping,
+      openedHazard, userProfiles, zoomLevel, hazards} = this.state
     const mapboxContainerStyle = {
       // 80px is the height of the global header.
       height: 'calc(100vh - 80px)',
@@ -47,29 +49,30 @@ class AdminView extends React.Component {
       backgroundColor: '#E0E0E0',
       border: '2px solid #C9C9C9',
     }
-    let usersInProximityToOpenedHazard = []
-    if (openedHazard !== null && this.hazardProximity) {
-      usersInProximityToOpenedHazard = (this.hazardProximity[openedHazard] || []).map(userId => {
-        return userProfiles[userId]
+
+    let usersInOpenedHazard
+    if (openedHazard) {
+      const hazardPoly = turf.polygon([openedHazard.geometry.coordinates])
+      usersInOpenedHazard = Object.values(userProfiles).filter(userProfile => {
+        var userPoint = turf.point(userProfile.location)
+        return turfInside(userPoint, hazardPoly)
       })
     }
     return (
       <div>
-        <UserAlertDialog
-            onClose={() => this.setState({openedHazard: null})}
-            open={openedHazard !== null}
-            usersInProximity={usersInProximityToOpenedHazard} />
         <HazardMap
             style={mapboxContainerStyle}
-            center={START_LOCATION}
+            center={START_LOCATION} zoom={[zoomLevel]}
             onZoom={map => this.setState({zoomLevel: map.getZoom()})}
-            zoom={[zoomLevel]}
+            onHazardClick={hazardId => this.setState({openedHazard: hazards[hazardId]})}
             groupedHazards={groupedHazards} hazardColorMapping={hazardColorMapping}>
           {Object.keys(userProfiles || []).map(userId => {
             return <Marker
                 key={userId} style={markerStyle}
                 coordinates={userProfiles[userId].location} />
           })}
+          {openedHazard ?
+            <NotificationPopup users={usersInOpenedHazard} hazard={openedHazard} /> : null}
         </HazardMap>
       </div>
     )
@@ -77,46 +80,42 @@ class AdminView extends React.Component {
 }
 
 
-class UserAlertDialog extends React.Component {
+class NotificationPopup extends React.Component {
   static propTypes = {
-    onClose: React.PropTypes.func.isRequired,
-    open: React.PropTypes.bool,
-    usersInProximity: React.PropTypes.array,
+    hazard: React.PropTypes.object.isRequired,
+    users: React.PropTypes.array.isRequired,
   }
 
   handleSendWarning(usersInProximity) {
     store.sendWarning(usersInProximity)
-    this.setState({isSending: true})
-    setTimeout(() => this.setState({isSending: false}), 3000)
+    this.setState({sendingMessage: 'Sending…'})
+    setTimeout(() => {
+      this.setState({sendingMessage: 'Warning sent!'})
+      setTimeout(() => {
+        this.setState({sendingMessage: ''})
+
+      }, 3000)
+    }, 3000)
   }
 
   state = {
-    isSending: false,
+    sendingMessage: '',
   }
 
   render() {
-    const {isSending} = this.state
-    const {onClose, open, usersInProximity} = this.props
+    const {hazard, users} = this.props
+    const {sendingMessage} = this.state
     return (
-      <Dialog title="Hazard information" modal={true} open={open}>
-        <div>
-          {(usersInProximity || []).length}
-          people in proximity
-        </div>
-        <div>
-          <h2>Warn them!</h2>
-          {isSending ?
-            <span>sending...</span> :
-            <button onClick={() => this.handleSendWarning(usersInProximity)}>
-              Send warning to all of them
-            </button>}
-        </div>
-        <button onClick={onClose}>close</button>
-      </Dialog>
+      <Popup anchor="bottom" coordinates={hazard.properties.center[0]}>
+        <h3>{hazard.properties.prod_type}</h3>
+        <div>Affected people {users.length}</div>
+        <button onClick={() => this.handleSendWarning(users)}>
+          {sendingMessage || 'Warn them now'}
+        </button>
+      </Popup>
     )
   }
 }
-
 
 
 export {AdminView}

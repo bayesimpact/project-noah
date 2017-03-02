@@ -22,7 +22,7 @@ const store = {
     // Current hazards are extracted from an API which calls them _watches_.
     // Please see hazard_watches_api.ipynb for details.
     db.ref('/data/watches').on('value', snapshot => {
-      const hazards = snapshot.val()
+      const hazards = snapshot.val().map((hazard, i) => ({...hazard, id: i}))
       const groupedHazards = _.groupBy(hazards, hazard => hazard.properties.prod_type)
       const sortedHazardNames = _.sortBy(Object.keys(groupedHazards), hazardName => {
         return -groupedHazards[hazardName].length
@@ -30,7 +30,7 @@ const store = {
       const hazardColorMapping = _.object(sortedHazardNames.map((name, i) => {
         return [name, i < 19 ? schemeCategory20[i] : schemeCategory20[19]]
       }))
-      callback({groupedHazards, hazardColorMapping, sortedHazardNames})
+      callback({groupedHazards, hazards, hazardColorMapping, sortedHazardNames})
     })
   },
   getUserProfiles: function(callback) {

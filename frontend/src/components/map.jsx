@@ -6,14 +6,15 @@ import config from 'config'
 
 class HazardMap extends React.Component {
   static propTypes = {
-    style: React.PropTypes.object,
+    children: React.PropTypes.node,
     groupedHazards: React.PropTypes.object,
     hazardColorMapping: React.PropTypes.object,
-    children: React.PropTypes.node,
+    onHazardClick: React.PropTypes.func,
+    style: React.PropTypes.object,
   }
 
   render() {
-    const {children, style, groupedHazards, hazardColorMapping} = this.props
+    const {children, style, groupedHazards, hazardColorMapping, onHazardClick} = this.props
     return (
       <ReactMapboxGl
           accessToken={config.mapboxAccessToken}
@@ -27,7 +28,9 @@ class HazardMap extends React.Component {
               type="fill"
               paint={{'fill-color': hazardColorMapping[name], 'fill-opacity': .7}}>
             {(hazards || []).map((hazard, i) => {
-              return <Feature key={i} coordinates={[hazard.geometry.coordinates]} />
+              return <Feature
+                  key={i} coordinates={[hazard.geometry.coordinates]}
+                  onClick={() => onHazardClick && onHazardClick(hazard.id)} />
             })}
           </Layer>
         })}
