@@ -1,12 +1,10 @@
 import React from 'react'
-import ReactMapboxGl, {Layer, Marker, Feature} from 'react-mapbox-gl'
+import {Layer, Marker} from 'react-mapbox-gl'
 import PlacesAutocomplete, {geocodeByAddress} from 'react-places-autocomplete'
-import _ from 'underscore'
-import {schemeCategory20} from 'd3-scale'
 import SearchIcon from 'react-icons/lib/md/search'
 import LocationIcon from 'react-icons/lib/md/my-location'
 
-import config from 'config'
+import {HazardMap} from 'components/map'
 import {store} from 'store/firebase'
 
 // TODO: Move all colors into constants.
@@ -21,14 +19,7 @@ class PublicView extends React.Component {
   };
 
   componentWillMount() {
-    store.getHazards(hazards => {
-      const groupedHazards = _.groupBy(hazards, hazard => hazard.properties.prod_type)
-      const sortedHazardNames = _.sortBy(Object.keys(groupedHazards), hazardName => {
-        return -groupedHazards[hazardName].length
-      })
-      const hazardColorMapping = _.object(sortedHazardNames.map((name, i) => {
-        return [name, i < 19 ? schemeCategory20[i] : schemeCategory20[19]]
-      }))
+    store.getHazards(({groupedHazards, hazardColorMapping, sortedHazardNames}) => {
       this.setState({groupedHazards, hazardColorMapping, sortedHazardNames})
     })
   }
@@ -73,26 +64,15 @@ class PublicView extends React.Component {
             <Legend
                 style={legendStyle}
                 colorMapping={hazardColorMapping} sortedNames={sortedHazardNames} /> : null}
-          <ReactMapboxGl
-              style="mapbox://styles/mapbox/streets-v8"
-              accessToken={config.mapboxAccessToken}
+          <HazardMap
+              style={mapboxContainerStyle} user={user}
               center={user && user.location || START_LOCATION}
-              containerStyle={mapboxContainerStyle}
-              zoom={user && user.location ? [7] : [4]}>
+              zoom={user && user.location ? [7] : [4]}
+              groupedHazards={groupedHazards} hazardColorMapping={hazardColorMapping}>
             <Layer type="symbol" id="marker" layout={{'icon-image': 'marker-15'}}>
               {user && user.location ? <Marker coordinates={user.location} /> : null}
             </Layer>
-            {_.map(groupedHazards, (hazards, name) => {
-              return <Layer
-                  key={name}
-                  type="fill"
-                  paint={{'fill-color': hazardColorMapping[name], 'fill-opacity': .7}}>
-                {(hazards || []).map((hazard, i) => {
-                  return <Feature key={i} coordinates={[hazard.geometry.coordinates]} />
-                })}
-              </Layer>
-            })}
-          </ReactMapboxGl>
+          </HazardMap>
         </div>
       </div>
     )

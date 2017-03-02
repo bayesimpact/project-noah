@@ -1,6 +1,8 @@
 import firebase from 'firebase'
 import firebaseui from 'firebaseui'
 import {browserHistory} from 'react-router'
+import _ from 'underscore'
+import {schemeCategory20} from 'd3-scale'
 
 // Initialize Firebase
 var firebaseConfig = {
@@ -20,7 +22,15 @@ const store = {
     // Current hazards are extracted from an API which calls them _watches_.
     // Please see hazard_watches_api.ipynb for details.
     db.ref('/data/watches').on('value', snapshot => {
-      callback(snapshot.val())
+      const hazards = snapshot.val()
+      const groupedHazards = _.groupBy(hazards, hazard => hazard.properties.prod_type)
+      const sortedHazardNames = _.sortBy(Object.keys(groupedHazards), hazardName => {
+        return -groupedHazards[hazardName].length
+      })
+      const hazardColorMapping = _.object(sortedHazardNames.map((name, i) => {
+        return [name, i < 19 ? schemeCategory20[i] : schemeCategory20[19]]
+      }))
+      callback({groupedHazards, hazardColorMapping, sortedHazardNames})
     })
   },
   getUserProfiles: function(callback) {
