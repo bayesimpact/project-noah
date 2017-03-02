@@ -9,6 +9,7 @@ import LocationIcon from 'react-icons/lib/md/my-location'
 import config from 'config'
 import {store} from 'store/firebase'
 
+// TODO: Move all colors into constants.
 
 // Center of the US.
 const START_LOCATION = [-96.328530, 38.321018]
@@ -28,18 +29,19 @@ class PublicView extends React.Component {
       const hazardColorMapping = _.object(sortedHazardNames.map((name, i) => {
         return [name, i < 19 ? schemeCategory20[i] : schemeCategory20[19]]
       }))
-      this.setState({groupedHazards, hazardColorMapping})
+      this.setState({groupedHazards, hazardColorMapping, sortedHazardNames})
     })
   }
 
   state = {
     groupedHazards: null,
     hazardColorMapping: null,
+    sortedHazardNames: null,
   }
 
   render() {
     const {user} = this.props
-    const {groupedHazards, hazardColorMapping} = this.state
+    const {groupedHazards, hazardColorMapping, sortedHazardNames} = this.state
     const locationSelectorStyle = {
       heigth: 55,
       left: 30,
@@ -48,8 +50,17 @@ class PublicView extends React.Component {
       width: 600,
       zIndex: 1,
     }
+    const legendStyle = {
+      bottom: 30,
+      left: 30,
+      maxHeight: '50%',
+      position: 'absolute',
+      width: 300,
+      zIndex: 1,
+    }
     const mapboxContainerStyle = {
-      height: '100vh',
+      // 80px is the height of the global header.
+      height: 'calc(100vh - 80px)',
       width: '100vw',
     }
     return (
@@ -58,6 +69,10 @@ class PublicView extends React.Component {
         <div style={{position: 'relative'}}>
           {user && user.termsAccepted ?
             <UserLocationSelector style={locationSelectorStyle} address={user.address} /> : null}
+          {hazardColorMapping && sortedHazardNames ?
+            <Legend
+                style={legendStyle}
+                colorMapping={hazardColorMapping} sortedNames={sortedHazardNames} /> : null}
           <ReactMapboxGl
               style="mapbox://styles/mapbox/streets-v8"
               accessToken={config.mapboxAccessToken}
@@ -237,6 +252,48 @@ class UserLocationSelector extends React.Component {
             onClick={this.handleBrowserLocationClick}>
           <LocationIcon />
         </div>
+      </div>
+    )
+  }
+}
+
+
+class Legend extends React.Component {
+  static propTypes = {
+    colorMapping: React.PropTypes.object.isRequired,
+    sortedNames: React.PropTypes.array.isRequired,
+    style: React.PropTypes.object.isRequired,
+  }
+
+  render() {
+    const {colorMapping, sortedNames, style} = this.props
+    const containerStyle = {
+      boxShadow: '0 0 5px 0 rgba(0, 0, 0, 0.25)',
+      color: '#212121',
+      overflowY: 'scroll',
+      ...style,
+    }
+    const listItemStyle = {
+      backgroundColor: '#fff',
+      borderBottom: '1px solid #f1f1f1',
+      height: 55,
+      display: 'flex',
+      alignItems: 'center',
+      paddingLeft: 20,
+    }
+    const boxStyle = {
+      width: 20,
+      height: 20,
+      marginRight: 20,
+    }
+    return (
+      <div style={containerStyle}>
+        {sortedNames.map(name => {
+          return <div key={name} style={listItemStyle}>
+            <div style={{...boxStyle, backgroundColor: colorMapping[name]}} />
+            <div>{name}</div>
+          </div>
+        })}
       </div>
     )
   }
