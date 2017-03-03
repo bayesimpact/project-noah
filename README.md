@@ -1,6 +1,6 @@
 # Bayes Impact - Project Noah 
 
-Project Noah is an emergency warning application for city and state officials. It is live at [project-noah-3a7f7.firebaseapp.com](project-noah-3a7f7.firebaseapp.com)
+Project Noah is an emergency warning application for city and state officials. It is live at [https://project-noah-3a7f7.firebaseapp.com/](https://project-noah-3a7f7.firebaseapp.com/)
 
 ![User View](https://cloud.githubusercontent.com/assets/7952712/23568687/83d33b9c-0010-11e7-9b77-4e6f66351202.png)
 
