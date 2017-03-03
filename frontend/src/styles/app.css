@@ -11,3 +11,18 @@
     opacity: 0.2;
   }
 }
+
+
+/*  Overwrite the US Standards styling to not mess up the appearance of the Firebase UI login form  */
+#firebaseui-auth-container > div > form > div.firebaseui-card-content label {
+  display: inherit;
+  margin-top: inherit;
+  max-width: inherit;
+}
+
+#firebaseui-auth-container > div > form > div.firebaseui-card-content input {
+  box-shadow: none;
+  outline: none;
+  outline-color: transparent;
+  outline-style: none;
+}
