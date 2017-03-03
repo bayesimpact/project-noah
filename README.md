@@ -114,8 +114,7 @@ Our continuous delivery process is built around Github and CircleCI. As soon as 
 
 # Conclusion
 
-Our holsitic approach ensures that each point of the RFI was adequately addressed.
-Here we cover each point of the RFI to demonstrate our holistic response. 
+Our holistic approach ensures that each requirement of the RFI was adequately addressed.
 
 | Technical Requirements                                                                                                                                                                     | Successful Completion of RFI Requirements                                                                                                                                                                                                   |
 |-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
