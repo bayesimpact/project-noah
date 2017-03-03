@@ -71,7 +71,7 @@ Bayes Impact created Project Noah to be a simple, intuitive, real-time map that 
 * Brian Lewis, Interaction Designer / User Researcher / Usability Tester.
 * Guillaume Chaslot, Backend Web Developer.
 * Kirtan Upadhyaya, Product Manager.
-* Pascal Corpet, Backend Engineer.
+* Pascal Corpet, Backend Web Developer.
 
 ## Our Agile Approach
 The Bayes Impact team implemented week long sprints following Scrum to rapidly iterate and test product mockups. We ran three, 1-week long sprints, starting with Sprint 0 (defined below). Stephan Gabler was the Scrum Master who managed daily standups, backlog grooming, and sprint planning sessions. For a full summary of the Bayes Agile methodology, refer to the [Project Management documentation.](https://github.com/bayesimpact/project-noah/wiki/Project-Management)
