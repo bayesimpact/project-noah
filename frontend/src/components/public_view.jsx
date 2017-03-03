@@ -1,5 +1,5 @@
 import React from 'react'
-import {Layer, Marker} from 'react-mapbox-gl'
+import {Layer, Marker, Popup} from 'react-mapbox-gl'
 import PlacesAutocomplete, {geocodeByAddress} from 'react-places-autocomplete'
 import SearchIcon from 'react-icons/lib/md/search'
 import LocationIcon from 'react-icons/lib/md/my-location'
@@ -20,20 +20,23 @@ class PublicView extends React.Component {
   };
 
   componentWillMount() {
-    store.getHazards(({groupedHazards, hazardColorMapping, sortedHazardNames}) => {
-      this.setState({groupedHazards, hazardColorMapping, sortedHazardNames})
+    store.getHazards(({groupedHazards, hazardColorMapping, hazards, sortedHazardNames}) => {
+      this.setState({groupedHazards, hazardColorMapping, hazards, sortedHazardNames})
     })
   }
 
   state = {
     groupedHazards: null,
     hazardColorMapping: null,
+    hazards: null,
+    openedHazard: null,
     sortedHazardNames: null,
   }
 
   render() {
     const {user} = this.props
-    const {groupedHazards, hazardColorMapping, sortedHazardNames} = this.state
+    const {groupedHazards, hazards, hazardColorMapping, openedHazard,
+      sortedHazardNames} = this.state
     const locationSelectorStyle = {
       heigth: 55,
       left: 30,
@@ -69,10 +72,16 @@ class PublicView extends React.Component {
               style={mapboxContainerStyle}
               center={user && user.location || START_LOCATION}
               zoom={user && user.location ? [7] : [4]}
+              onHazardClick={hazardId => this.setState({openedHazard: hazards[hazardId]})}
               groupedHazards={groupedHazards} hazardColorMapping={hazardColorMapping}>
             <Layer type="symbol" id="marker" layout={{'icon-image': 'marker-15'}}>
               {user && user.location ? <Marker coordinates={user.location} /> : null}
             </Layer>
+            {openedHazard ?
+              <HazardPopup
+                  onClose={() => this.setState({openedHazard: null})}
+                  hazard={openedHazard} /> :
+              null}
           </HazardMap>
         </div>
       </div>
@@ -276,6 +285,37 @@ class Legend extends React.Component {
           </div>
         })}
       </div>
+    )
+  }
+}
+
+
+class HazardPopup extends React.Component {
+  static propTypes = {
+    hazard: React.PropTypes.object.isRequired,
+    onClose: React.PropTypes.func,
+  }
+
+  render() {
+    const {hazard, onClose} = this.props
+    const popupStyle = {
+      padding: '0 30px 30px 30px',
+      position: 'relative',
+    }
+    const closeButtonStyle = {
+      cursor: 'pointer',
+      fontSize: 18,
+      position: 'absolute',
+      right: 10,
+      top: -30,
+    }
+    return (
+      <Popup anchor="bottom" coordinates={hazard.properties.center[0]}>
+        <div style={popupStyle}>
+          {onClose ? <div onClick={onClose} style={closeButtonStyle}>x</div> : null}
+          <h3>{hazard.properties.prod_type}</h3>
+        </div>
+      </Popup>
     )
   }
 }
