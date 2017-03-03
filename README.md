@@ -88,11 +88,12 @@ View all of our product prototypes and individual user feedback that fed into ea
 
 ##Project Team
 
-Stephan Gabler, Technical Architect and primary project leader who was responsible for delivery of the final product.
-Mehdi Jamei, Delivery Manager.
-Brian Lewis, Interaction Designer / User Researcher / Usability Tester.
-Guillaume Chaslot, Backend Web Developer.
-Kirtan Upadhyaya, Product Manager.
+* Stephan Gabler, Technical Architect and primary project leader who was responsible for delivery of the final product.
+* Mehdi Jamei, Delivery Manager.
+* Brian Lewis, Interaction Designer / User Researcher / Usability Tester.
+* Guillaume Chaslot, Backend Web Developer.
+* Kirtan Upadhyaya, Product Manager.
+* Pascal Corpet, Backend Engineer.
 
 ##Agile Methodology
 The Bayes Impact team implemented week long sprints following Scrum to rapidly iterate and test product mockups. We ran three, 1-week long sprints, starting with Sprint 0 (defined below). Stephan Gabler was the Scrum Master who managed daily standups, backlog grooming, and sprint planning sessions. For a full summary of the Bayes Agile methodology, refer to the [Project Management documentation.](https://github.com/bayesimpact/project-noah/wiki/Project-Management)
