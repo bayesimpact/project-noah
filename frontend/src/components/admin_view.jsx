@@ -72,7 +72,9 @@ class AdminView extends React.Component {
                 coordinates={userProfiles[userId].location} />
           })}
           {openedHazard ?
-            <NotificationPopup users={usersInOpenedHazard} hazard={openedHazard} /> : null}
+            <NotificationPopup
+                onClose={() => this.setState({openedHazard: null})}
+                users={usersInOpenedHazard} hazard={openedHazard} /> : null}
         </HazardMap>
       </div>
     )
@@ -83,6 +85,7 @@ class AdminView extends React.Component {
 class NotificationPopup extends React.Component {
   static propTypes = {
     hazard: React.PropTypes.object.isRequired,
+    onClose: React.PropTypes.func,
     users: React.PropTypes.array.isRequired,
   }
 
@@ -123,10 +126,11 @@ class NotificationPopup extends React.Component {
   }
 
   render() {
-    const {hazard, users} = this.props
+    const {hazard, onClose, users} = this.props
     const {notificationText, sendingMessage} = this.state
     const popupStyle = {
       padding: '0 30px 30px 30px',
+      position: 'relative',
     }
     const lineStyle = {
       border: 0,
@@ -143,9 +147,17 @@ class NotificationPopup extends React.Component {
       marginBottom: 20,
       width: 280,
     }
+    const closeButtonStyle = {
+      cursor: 'pointer',
+      fontSize: 18,
+      position: 'absolute',
+      right: 10,
+      top: -30,
+    }
     return (
       <Popup anchor="bottom" coordinates={hazard.properties.center[0]}>
         <div style={popupStyle}>
+          {onClose ? <div onClick={onClose} style={closeButtonStyle}>x</div> : null}
           <h3>{hazard.properties.prod_type}</h3>
           <hr style={lineStyle} />
           <div style={{display: 'flex', fontSize: 15}}>
