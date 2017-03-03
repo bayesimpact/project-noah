@@ -44,7 +44,7 @@ class AppComponent extends React.Component {
         <header style={headerStyle}>
           <span>Project Noah ⛵</span>
           <span style={{flex: 1}} />
-          {user ?
+          {user.uid ?
             <Menu style={menuStyle} user={user} path={location.pathname} /> :
             <button onClick={() => browserHistory.push('/login')} style={{marginRight: 20}}>
               Log in or sign up to receive alerts
