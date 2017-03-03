@@ -8,8 +8,9 @@
 # design of the backend this is completly acceptable.
 readonly AWS_SERVICE=project-noah
 readonly RESTART_REASON="$1"
+readonly AWS_DEFAULT_REGION=eu-central-1
 
 readonly TASK_ID="$(aws ecs list-tasks --service-name ${AWS_SERVICE} |\
   grep arn |\
   sed -e "s/^.*task\///;s/\".*//")"
-aws ecs stop-task --task "${TASK_ID}" --reason "${RESTART_REASON}"
+aws ecs stop-task --task "${TASK_ID}" --reason "${RESTART_REASON}" --region "${AWS_DEFAULT_REGION}"
