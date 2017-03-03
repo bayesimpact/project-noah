@@ -86,32 +86,84 @@ class NotificationPopup extends React.Component {
     users: React.PropTypes.array.isRequired,
   }
 
+  componentWillMount() {
+    this.setNotificationTextFromProps(this.props)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setNotificationTextFromProps(nextProps)
+  }
+
+  setNotificationTextFromProps(props) {
+    const {hazard} = props
+    const hazardName = hazard.properties.prod_type
+    this.setState({
+      notificationText: `You are in the area of a '${hazardName}'. Move to a safe location now!`,
+    })
+  }
+
   handleSendWarning(usersInProximity) {
-    store.sendWarning(usersInProximity)
+    const {notificationText} = this.state
+    store.sendWarning(usersInProximity, notificationText)
     this.setState({sendingMessage: 'Sending…'})
     setTimeout(() => {
       this.setState({sendingMessage: 'Warning sent!'})
       setTimeout(() => {
         this.setState({sendingMessage: ''})
-
       }, 3000)
     }, 3000)
   }
 
   state = {
+    notificationText: '',
     sendingMessage: '',
   }
 
   render() {
     const {hazard, users} = this.props
-    const {sendingMessage} = this.state
+    const {notificationText, sendingMessage} = this.state
+    const popupStyle = {
+      padding: '0 30px 30px 30px',
+    }
+    const lineStyle = {
+      border: 0,
+      height: 0,
+      borderBottom: '1px solid #f1f1f1',
+      margin: '15px 0',
+    }
+    const textareaStyle = {
+      border: 'solid 1px #d6d7d9',
+      borderRadius: 4,
+      color: '#313131',
+      fontStyle: 'italic',
+      height: 100,
+      marginBottom: 20,
+      width: 280,
+    }
     return (
       <Popup anchor="bottom" coordinates={hazard.properties.center[0]}>
-        <h3>{hazard.properties.prod_type}</h3>
-        <div>Affected people {users.length}</div>
-        <button onClick={() => this.handleSendWarning(users)}>
-          {sendingMessage || 'Warn them now'}
-        </button>
+        <div style={popupStyle}>
+          <h3>{hazard.properties.prod_type}</h3>
+          <hr style={lineStyle} />
+          <div style={{display: 'flex', fontSize: 15}}>
+            <div><b>Affected people</b></div>
+            <div style={{flex: 1}} />
+            <div>{users.length}</div>
+          </div>
+          <hr style={lineStyle} />
+
+          <label htmlFor="notice-text">Warn message</label>
+          <textarea
+              value={notificationText}
+              onChange={event => this.setState({notificationText: event.target.value})}
+              style={textareaStyle} id="notice-text" name="notice-text" />
+
+          <button
+              disabled={!users.length} className={users.length ? '' : 'usa-button-disabled'}
+              onClick={() => this.handleSendWarning(users)}>
+            {sendingMessage || 'Warn them now'}
+          </button>
+        </div>
       </Popup>
     )
   }

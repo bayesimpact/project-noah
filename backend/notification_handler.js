@@ -20,7 +20,7 @@ db.ref('/notifications').orderByChild('sent').endAt(false).on('child_added', sna
   const notification = snapshot.val()
   console.log('> texting to', notification)
   twilioClient.messages.create({
-    body: 'Yooooo, the flood is coming. Ruuuuun! 🏃💨',
+    body: notification.text || 'The flood is coming. Ruuuuun! 🏃💨',
     to: notification.number,
     from: config.sendingNumber,
   }, err => {

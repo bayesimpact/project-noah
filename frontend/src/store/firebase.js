@@ -82,9 +82,13 @@ const store = {
     }
     db.ref(`/userProfiles/${this.user.uid}`).update(profile)
   },
-  sendWarning: function(users) {
+  sendWarning: function(users, notificationText) {
     (users || []).forEach(user => {
-      const notification = {number: user.phoneNumber, sent: false}
+      const notification = {
+        text: notificationText,
+        number: user.phoneNumber,
+        sent: false,
+      }
       db.ref('/notifications').push(notification)
     })
   },
