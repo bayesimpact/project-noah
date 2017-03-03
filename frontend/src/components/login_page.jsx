@@ -14,7 +14,9 @@ class LoginPage extends React.Component {
 
   render() {
     return (
-      <div id="firebaseui-auth-container" />
+      <div style={{paddingTop: 50}}>
+        <div id="firebaseui-auth-container" />
+      </div>
     )
   }
 }
