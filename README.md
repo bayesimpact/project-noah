@@ -1,8 +1,6 @@
 # Bayes Impact - Project Noah 
 
-Open Source Prototype: 
-
-Live at [project-noah-3a7f7.firebaseapp.com](project-noah-3a7f7.firebaseapp.com)
+Project Noah is an emergency warning application for city and state officials. It is live at [project-noah-3a7f7.firebaseapp.com](project-noah-3a7f7.firebaseapp.com)
 
 To run on a local machine: 
 
@@ -63,7 +61,7 @@ docker-compose run --rm frontend npm run deploy
 
 Bayes Impact created Project Noah to be a simple, intuitive, real-time map that can notify users via text message if their proximity to an emergency or nonemergency hazard becomes a concern. The tool also allows city and state officials to view hazards on an interactive map and warn users who are too close to any particular hazard via text message.
 
-## Project Team
+## The Project Team
 
 
 * Stephan Gabler, Technical Architect and primary project leader who was responsible for delivery of the final product.
@@ -73,12 +71,12 @@ Bayes Impact created Project Noah to be a simple, intuitive, real-time map that 
 * Kirtan Upadhyaya, Product Manager.
 * Pascal Corpet, Backend Engineer.
 
-## Agile Methodology
+## Our Agile Approach
 The Bayes Impact team implemented week long sprints following Scrum to rapidly iterate and test product mockups. We ran three, 1-week long sprints, starting with Sprint 0 (defined below). Stephan Gabler was the Scrum Master who managed daily standups, backlog grooming, and sprint planning sessions. For a full summary of the Bayes Agile methodology, refer to the [Project Management documentation.](https://github.com/bayesimpact/project-noah/wiki/Project-Management)
 
 
-## Product Design Research
-###User Interviews 
+## How We Designed Noah
+### User Interviews 
 
 We firmly believe in starting with the people we are building for first. So, we defined two users for emergency and non-emergency notifications: notification recipients - outdoor enthusiasts, tourists, locals - and notification administrators - city or state officials. 
 
@@ -88,7 +86,7 @@ We connected with avid outdoorsmen & women, and tourists who corroborated genera
 
 These user interviews guided a broader research of similar products and how we can improve upon user needs and current product drawbacks. Read more about our research approach in the [Design Research guide.](https://github.com/bayesimpact/project-noah/wiki/Design-Research-and-Protoyping) 
 
-###Rapid Prototyping
+### How We Rapidly Prototype
 
 We created two pipelines for product demonstration, design mockups that allowed for rapid feedback and several iterations. We developed three crude, clickable mockups using Balsamiq to determine basic functionality and user flow for a production MVP. 
 
@@ -96,19 +94,19 @@ Our production prototypes was delivered after Sprint 1 and Sprint 2, using the f
 
 View all of our product prototypes and individual user feedback that fed into each new iteration in the [Prototyping guide.](https://github.com/bayesimpact/project-noah/wiki/Design-Research-and-Protoyping)
 
-##Technical Approach
+## Our Technical Approach
 
-###Application architecture
+### Application architecture
 
 The application used the React framework to build an easily maintainable and interactive single page application. We decided to use Google’s Firebase PaaS to get simple hosting, authentication and authentication out of the box. After the static files of the application are built in a Docker container by our CI system, they are deployed to Firebase hosting to be accessible by the client. The client furthermore uses Mapbox for an interactive map and Google places API for lockup of geographic coordinates. Firebase has the advantage of automated realtime syncing of data, which allows us to show new users and hazards in the admin view as soon as they are added to the database. The second part of the application is a node.js application running in a Docker container in Amazons’s Elastic Container Service. Also here the real-time nature of Firebase is advantageous because it allowed us to easily implement a message queue for SMS notifications. As soon as the client creates a new entry in the notifications collection on Firebase, the backend is notified of this new entry and sends a notification through the Twilio API. For detailed documentation and a list of our full technology stack, refer to our [Technical Approach.](https://github.com/bayesimpact/project-noah/wiki/Technical-Approach)
 
-###Data
+### Data
 
 We investigated several of the APIs that were mentioned in the solicitation. We found one endpoint that contained warnings of different kind of hazards and we decided to use this single endpoint for our prototype. Details can be found in these [links.](https://github.com/bayesimpact/project-noah/tree/master/data_analysis/notebooks) Because the API endpoint fails with a HTTP 500 regularly, we did not set up a scheduled importer task yet. We are in communication with the providers of the API and will deploy a task to pull in fresh data at regular intervals as soon as the problems on their side are fixed.
 
 To import the data we use a Python script that pulls the data from an ArcGIS server, simplifies the shapes of the hazard polygons in order to save bandwidth and space in our database and import them into our Firebase database.
 
-###Continuous Integration Flow
+### Continuous Integration Flow
 
 Our continuous delivery process is built around Github and CircleCI. As soon as a new Pull Request gets created on Github, a new testing and build process is triggered on CircleCI. Additionally the reviewer assigned to the PR is notified via Reviewable.io. We decided to use Reviewable instead of GitHub because it gives us more control over the acceptance criteria of a pull request. When the build process was successful and the PR was accepted by at least one reviewer, the feature branch can be merged into master. The merge into master will trigger the deployment pipeline, which first will build again the containers, then run the linters and the tests again to check that nothing went wrong during the merge. If that was successful, the container of the backend is pushed to the Docker Hub registry and Amazon’s container service ECS will get notified that a new version of the backend is ready for deployment. ECS will automatically start running this new task in our AWS cluster. In a second step the static files for the client application are built in a Docker container and directly pushed to Firebase hosting. The third step is to deploy the Firebase database rules to the Firebase real-time database to make sure that data is only accessible to authorized users. We wrote extensive tests to guarantee the correctness of our database access rules. For detailed documentation, refer to our [Technical Approach.](https://github.com/bayesimpact/project-noah/wiki/Technical-Approach)
 
