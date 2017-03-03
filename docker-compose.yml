@@ -2,6 +2,7 @@ version: "2"
 services:
   backend:
     build: backend
+    image: bayesimpact/noah-notification-backend
     volumes:
       - ./backend/package.json:/usr/app/package.json:ro
       - ./backend/notification_handler.js:/usr/app/notification_handler.js:ro

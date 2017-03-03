@@ -6,5 +6,5 @@ WORKDIR /usr/app
 COPY package.json .
 RUN npm install
 
-COPY notification_handler.js /usr/app/
+COPY config.js notification_handler.js /usr/app/
 CMD npm start
