@@ -12,6 +12,7 @@ import {store} from 'store/firebase'
 // Center of the US.
 const START_LOCATION = [-96.328530, 38.321018]
 
+const isOnSmallScreen = () => window.innerWidth < 800
 
 class PublicView extends React.Component {
   static propTypes = {
@@ -38,7 +39,7 @@ class PublicView extends React.Component {
       left: 30,
       position: 'absolute',
       top: 30,
-      width: 600,
+      width: isOnSmallScreen() ? 'inherit' : 600,
       zIndex: 1,
     }
     const legendStyle = {
@@ -60,7 +61,7 @@ class PublicView extends React.Component {
         <div style={{position: 'relative'}}>
           {user && user.termsAccepted ?
             <UserLocationSelector style={locationSelectorStyle} address={user.address} /> : null}
-          {hazardColorMapping && sortedHazardNames ?
+          {hazardColorMapping && sortedHazardNames && !isOnSmallScreen() ?
             <Legend
                 style={legendStyle}
                 colorMapping={hazardColorMapping} sortedNames={sortedHazardNames} /> : null}
