@@ -5,7 +5,6 @@ Prototype:
 Live at [project-noah-3a7f7.firebaseapp.com](project-noah-3a7f7.firebaseapp.com)
 
 
-Warn people when the flood is about to come.
 
 ## Development
 
