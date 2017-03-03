@@ -1,4 +1,4 @@
-/*  Base Application Styles  */
+/*  Crosshair animation during geo localization  */
 .blink {
   animation: blinker 0.7s cubic-bezier(0.8, 0.01, 0.26, 0.98) infinite alternate;
 }
