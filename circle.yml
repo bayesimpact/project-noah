@@ -18,7 +18,7 @@ deployment:
     branch: master
     commands:
       - docker-compose run frontend npm run deploy
-      - docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
+      - docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD" -e "$DOCKER_EMAIL"
       - docker push bayesimpact/noah-notification-backend
       - backend/restart-aws-service.sh "A new version of the backend ($CIRCLE_SHA1) is ready."
 experimental:
